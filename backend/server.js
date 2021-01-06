@@ -2,7 +2,9 @@ const http = require('http');
 const app = require('./app');
 const mysql = require('mysql');
 
-const connection = mysql.createConnection({
+
+
+/*const connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : 'Bm@2020',
@@ -14,7 +16,7 @@ connection.query('SELECT * FROM user', function (error, results, fields) {
   // error will be an Error if one occurred during the query
   // results will contain the results of the query
   // fields will contain information about the returned results fields (if any)
-});
+});*/
 
 app.listen(5010,function(){
   console.log("server is running on port 5010");
@@ -39,7 +41,7 @@ connection.query('SELECT * FROM user', function (error, results, fields) {
 // Execute some query statements
 // I.e. SELECT * FROM FOO
 
-connection.end();
+//connection.end();
 
 /*
 // Paramétrages du serveur

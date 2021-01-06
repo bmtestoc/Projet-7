@@ -1,19 +1,14 @@
-/* Initialize Sequelize */
-const config = {
-    username: "database username",
-    password: "database password",
-    database: "database name",
-    host: "database's host URL",
-    dialect: "mysql" // Other options are postgres, sqlite, mariadb and mssql.
-}
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize(config);
+const sequelize = require("./db.js");
 
-/* Define Models */
-sequelize.define("post_comment", {
+// Définition du modèle ---------------VERIFIER CHAMPS BDD---------------
+module.exports = (sequelize, Sequelize) => {
+    const postComment = sequelize.define("post_comment", {
     id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+            autoIncrement: true,
+            allowNull: false,
+            primaryKey: true
     },
     user_id: {
         type: Sequelize.INTEGER,
@@ -30,5 +25,11 @@ sequelize.define("post_comment", {
     created_at: {
         type: Sequelize.DATE,
         allowNull: false
+    }
     },
-});
+    {
+        tableName: 'post_comment'
+    });
+
+    return postComment;
+};

@@ -1,16 +1,9 @@
-/* Initialize Sequelize */
-const config = {
-    username: "database username",
-    password: "database password",
-    database: "database name",
-    host: "database's host URL",
-    dialect: "mysql" // Other options are postgres, sqlite, mariadb and mssql.
-}
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize(config);
+const sequelize = require("./db.js");
 
-/* Define Models */
-sequelize.define("post", {
+// Définition du modèle
+module.exports = (sequelize, Sequelize) => {
+    const Post = sequelize.define("post", {
     id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -21,13 +14,9 @@ sequelize.define("post", {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-            model: user,
+            model: 'user',
             key: 'id',
         }
-    },
-    created_at: {
-        type: Sequelize.DATE,
-        allowNull: false
     },
     content: {
         type: Sequelize.TEXT,
@@ -37,4 +26,18 @@ sequelize.define("post", {
         type: Sequelize.STRING(80),
         allowNull: false
     },
-});
+    user_profile: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'user',
+            key: 'profile',
+        }
+    },
+    
+        tableName: 'post'
+    });
+
+    return Post;
+
+};
