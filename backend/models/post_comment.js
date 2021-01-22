@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./db.js");
 
-// Définition du modèle ---------------VERIFIER CHAMPS BDD---------------
+// Définition du modèle
 module.exports = (sequelize, Sequelize) => {
     const postComment = sequelize.define("post_comment", {
     id: {
@@ -22,10 +22,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: false
     },
-    created_at: {
-        type: Sequelize.DATE,
-        allowNull: false
-    }
     },
     {
         tableName: 'post_comment'

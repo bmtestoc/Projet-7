@@ -26,18 +26,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING(80),
         allowNull: false
     },
-    user_profile: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'user',
-            key: 'profile',
-        }
     },
-    
+    {
         tableName: 'post'
     });
 
     return Post;
-
+    
 };

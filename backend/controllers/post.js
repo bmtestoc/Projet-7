@@ -20,10 +20,10 @@ exports.createPost = (req, res, next) => {
 
 //Suppression d'un post
 exports.deletePost = (req, res, next) => {
-    const userId = req.params.id;
-    var condition = userId ?
-        { id: { [Op.eq]: userId } } : null;
-    User.destroy({ where: condition })
+    const postId = req.params.id;
+    var condition = postId ?
+        { id: { [Op.eq]: postId } } : null;
+    Post.destroy({ where: condition })
         .then(data => {
             res.sendStatus(data);
         })
@@ -34,11 +34,15 @@ exports.deletePost = (req, res, next) => {
             });
         });
 };
-
+/*
 //Affichage de tous les posts
 exports.getAllPosts = (req, res, next) => {
     const search = req.query.search;
-    const offset = parseInt(req.query.offset);
+    
+    let offset = 0;
+    if(req.query.offset) {
+        offset = parseInt(req.query.offset);
+    }
     var condition = search ?
         {
             [Op.or]: [
@@ -61,30 +65,21 @@ exports.getAllPosts = (req, res, next) => {
             });
         });
 };
-
+*/
 //Modification d'un post
 exports.updatePost = (req, res, next) => {
-    const userId = parseInt(req.params.id)
-    let userUpdate = {};
-    if (req.body.login) {
-        userUpdate['login'] = req.body.login;
+    const postId = parseInt(req.params.id)
+    let postUpdate = {};
+    if (req.body.title) {
+        postUpdate['title'] = req.body.title;
     }
-    if (req.body.password) {
-        userUpdate['password'] = req.body.password;
+    if (req.body.content) {
+        postUpdate['content'] = req.body.content;
     }
-    if (req.body.picture) {
-        userUpdate['picture'] = req.body.picture;
-    }
-    if (req.body.profile) {
-        userUpdate['profile'] = req.body.profile;
-    }
-    if (req.body.email) {
-        userUpdate['email'] = req.body.email;
-    }
-    var condition = userId ?
-        { id: userId } : null;
-    User.update(
-        userUpdate,
+    var condition = postId ?
+        { id: postId } : null;
+    Post.update(
+        postUpdate,
         {
             where: condition
         })
@@ -115,3 +110,37 @@ exports.getOnePost = (req, res, next) => {
             });
         });
 };
+
+//Affichage de tous les posts
+exports.getAllPosts = (req, res, next) => {
+    const search = req.query.search;
+    let offset = 0;
+    if(req.query.offset) {
+        offset = parseInt(req.query.offset);
+    }
+    (async() => {
+    postLogin = await db.sequelize.query("SELECT post.id AS post_id, post.user_id AS post_user_id, post.createdAt AS post_createdAt, post.content AS post_content, post.title AS post_title, post.updatedAt AS post_updatedAt, user.login AS user_login, user.last_connection AS user_last_connexion, user.picture AS user_picture, user.profile AS user_profile, user.email AS user_email, user.is_active AS user_is_active, user.createdAt AS user_createdAt, user.updatedAt AS user_updatedAt, COUNT(post_comment.id) AS nb_comments, count(pc2.id) AS nb_comments_unread, post_read.last_read FROM post LEFT JOIN user ON post.user_id = user.id LEFT JOIN post_comment ON post_comment.post_id = post.id LEFT JOIN post_read ON post_read.post_id = post.id AND post_read.user_id = :id LEFT JOIN post_comment pc2 ON pc2.post_id = post.id AND pc2.createdAt > post_read.last_read GROUP BY post.id ORDER BY post.`createdAt` DESC LIMIT 0, 100", {
+        replacements: {id: req.query.userId},
+        type: db.sequelize.QueryTypes.SELECT
+      });
+      return res.status(200).json(postLogin);
+    })();
+};
+/*
+//Compteur de commentaires
+exports.getCounterComment = (req, res, next) => {
+    const search = req.query.search;
+    let offset = 0;
+    if(req.query.offset) {
+        offset = parseInt(req.query.offset);
+    }
+    (async() => {
+        counterComment = await db.sequelize.query("SELECT COUNT(post_comment.id) AS nb_comment, post_id FROM post_comment INNER JOIN post ON post_comment.post_id = post.id GROUP BY post_id", {
+        //replacements: {id: req.user.id},
+        type: db.sequelize.QueryTypes.SELECT
+      });
+      console.log(counterComment);
+      return res.status(200).json(counterComment);
+    })();
+};
+*/

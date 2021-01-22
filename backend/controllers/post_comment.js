@@ -4,35 +4,28 @@ const mysql = require('mysql');
 // Import du modèle postComment
 const db = require("../models/db");
 const post_comment = require('../models/post_comment');
-const Post = db.post_comment;
+const postComment = db.post_comment;
 const userValidator = require('./user.validator');
 const Op = db.Sequelize.Op;
 
 // Création d'un commentaire
 exports.createComment = (req, res, next) => {
-    if (userValidator.isGoodPassword(req.body.password)) {
-        User.create({
-            login: req.body.login,
-            email: req.body.email,
-            password: req.body.password,
-            picture: req.body.picture,
-            profile: 0,
-            is_active: 1
+    
+        postComment.create({
+            user_id: req.body.user_id,
+            content: req.body.content,
+            post_id: req.body.post_id,
         })
-            .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-            .catch(error => res.status(400).json({ message: 'Utilisateur déjà existant !' }));
-    }
-    else {
-        return res.status(404).json({ message: 'Le mot de passe doit contenir au moins un nombre, une minuscule, une majuscule et être composé de 6 caractères minimum' });
-    }
+            .then(() => res.status(201).json({ message: 'Commentaire créé !' }))
+            
 };
 
 //Suppression d'un commentaire
 exports.deleteComment = (req, res, next) => {
-    const userId = req.params.id;
-    var condition = userId ?
-        { id: { [Op.eq]: userId } } : null;
-    User.destroy({ where: condition })
+    const postCommentId = req.params.id;
+    var condition = postCommentId ?
+        { id: { [Op.eq]: postCommentId } } : null;
+    postComment.destroy({ where: condition })
         .then(data => {
             res.sendStatus(data);
         })
@@ -55,7 +48,7 @@ exports.getAllComments = (req, res, next) => {
                 { email: { [Op.like]: `%${search}%` } }
             ]
         } : null;
-        post_comment.findAll({ where: condition,
+        postComment.findAll({ where: condition,
             order: [['createdAt', 'DESC']],
             offset: offset,
             limit: 100
@@ -74,27 +67,15 @@ exports.getAllComments = (req, res, next) => {
 
 //Modification d'un commentaire
 exports.updateComment = (req, res, next) => {
-    const userId = parseInt(req.params.id)
-    let userUpdate = {};
-    if (req.body.login) {
-        userUpdate['login'] = req.body.login;
+    const postCommentId = parseInt(req.params.id)
+    let postCommentUpdate = {};
+    if (req.body.content) {
+        postCommentUpdate['content'] = req.body.content;
     }
-    if (req.body.password) {
-        userUpdate['password'] = req.body.password;
-    }
-    if (req.body.picture) {
-        userUpdate['picture'] = req.body.picture;
-    }
-    if (req.body.profile) {
-        userUpdate['profile'] = req.body.profile;
-    }
-    if (req.body.email) {
-        userUpdate['email'] = req.body.email;
-    }
-    var condition = userId ?
-        { id: userId } : null;
-    User.update(
-        userUpdate,
+    var condition = postCommentId ?
+        { id: postCommentId } : null;
+    postComment.update(
+        postCommentUpdate,
         {
             where: condition
         })
@@ -125,3 +106,4 @@ exports.getOneComment = (req, res, next) => {
             });
         });
     };
+
