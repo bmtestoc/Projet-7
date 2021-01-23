@@ -3,12 +3,16 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-import posts from '@/components/posts'
+import posts from '@/views/posts'
 import users from '@/components/users'
 import post from '@/components/post'
 import connectionPage from '@/views/connection.vue'
 import inscriptionPage from '@/views/inscription.vue'
 import rules from '@/components/rules'
+
+/* POUR TESTS
+import burgerMenu from '@/components/burgerMenu'
+*/
 
 export default new Router({
   routes: [
@@ -45,5 +49,11 @@ export default new Router({
       component: rules
     
     }
+    /* POUR TESTS,
+    {
+      path: '/bk',
+      name: 'burgerMenu',
+      component: burgerMenu
+    }*/
   ]
 })
