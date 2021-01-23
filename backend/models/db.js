@@ -11,8 +11,10 @@ const config = {
     dialect: "mysql",
     dialectOptions: {
         useUTC: false, // for reading from database
-      },
-      timezone: '+01:00', // for writing to database
+        dateStrings: true,
+        typeCast: true
+    },
+    timezone: '+01:00', // for writing to database
 }
 
 const sequelize = new Sequelize(config);
