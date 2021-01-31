@@ -16,7 +16,13 @@ export default {
     };
   },
   async created(){
-    this.users = (await axios.get('http://localhost:5010/api/user')).data;
+    //this.users = (await axios.get('http://localhost:5010/api/user')).data;
+    this.users = (await axios.get('http://localhost:5010/api/user', 
+    { 
+        headers: {
+          'Authorization': `token ${localStorage.getItem('user_token')}`
+        }
+    }))
   }
 };
 

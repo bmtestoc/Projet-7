@@ -9,6 +9,7 @@
         <input
           type="email"
           class="form-control"
+          placeholder="Email"
           name=""
           value=""
           id="email"
@@ -22,6 +23,7 @@
         <input
           type="text"
           class="form-control"
+          placeholder="Login"
           name=""
           value=""
           id="login"
@@ -40,6 +42,7 @@
           v-on:focus="showdiv"
           v-on:blur="maskdiv"
           class="form-control"
+          placeholder="Mot de passe"
           name=""
           value=""
           id="password"
@@ -53,6 +56,7 @@
           type="password"
           v-on:blur="verif"
           class="form-control"
+          placeholder="Mot de passe"
           name=""
           value=""
           id="password2"
@@ -62,7 +66,7 @@
         <small id="confirm" class="text-danger"></small>
       </div>
       <button type="submit" class="btn btn-primary">S'inscrire</button>
-      <p>Déjà inscrit ? <a href="/#/signin">Veuillez vous connecter</a></p>
+      <p>Déjà inscrit ? <a href="/signin">Veuillez vous connecter</a></p>
     </form>
   </div>
 </template>
@@ -82,16 +86,14 @@ export default {
   },
   methods: {
     envoi: function () {
-      //Fonction qui envoi le formulaire d'inscription à l'API
+      //Envoi du formulaire à l'API
       let token = "";
       if (this.email == "" || this.login == "" || this.password == "") {
-        alert("Veuillez remplir tous les champs !");
+        this.$alert("Veuillez remplir tous les champs !");
       } else if (this.password != this.password2) {
-        //Forfitification par la complétion du password 2 fois
-        alert("Les mots de passe saisis sont différents !");
+        this.$alert("Les mots de passe saisis sont différents !");
       } else {
-        axios
-          .post(
+        axios.post(
             "http://localhost:5010/api/user/signup",
             {
               email: this.email,
@@ -106,32 +108,34 @@ export default {
             }
           )
           .then((response) => {
-            console.log("Inscription réussie !");
+            this.$alert("Inscription réussie !");
             let reponse = response.data;
-            let userObject = JSON.stringify(reponse);
-            this.$localStorage.set("user", userObject);
-            let user = JSON.parse(this.$localStorage.get("user"));
-            token = user.token; //Token d'authentification
-            alert(
-              "Merci pour votre inscription, vous pouvez maintenant vous connecter"
-            );
-            window.location.href = "http://localhost:8080//#/signup";
+            console.log(response);
+            //let userObject = JSON.stringify(reponse);
+            //console.log(localStorage);
+            //localStorage.setItem("user", userObject);
+            //let user = JSON.parse(localStorage.getItem("user"));
+            //Token d'authentification
+            //token = user.token; 
+            //Redirection vers la page de connexion
+            this.$alert("Merci pour votre inscription, vous pouvez maintenant vous connecter");
+            window.location.href = "http://localhost:8080/signin";
           })
-          .catch(() => console.log("Echec de l'inscription"));
+          .catch(() => this.$alert("Echec de l'inscription"));
       }
     },
 
     showdiv: function () {
-      //Affichage d'un encadré pour aider à choisir le mot de passe
+      //Affichage des consignes pour choisir le mot de passe
       document.getElementById("showfocus").style.display = "block";
     },
 
     maskdiv: function () {
-      //Masquage de l'encadré précédents
+      //Masquage des consignes pour choisir le mot de passe
       document.getElementById("showfocus").style.display = "none";
     },
     verif: function () {
-      //Fonction de vérification du password
+      //Fonction pour vérifier que les passwords saisis sont identiques
       if (this.password != this.password2) {
         document.getElementById("confirm").innerHTML =
           "Veuillez resaisir votre mot de passe";

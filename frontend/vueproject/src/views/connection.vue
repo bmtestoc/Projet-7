@@ -10,7 +10,6 @@
 import connection from "../components/connection.vue";
 import mainFooter from "../components/mainFooter.vue";
 import mainHeader from "../components/mainHeader.vue";
-import rules from "../components/rules.vue";
 
 export default {
   name: "connectionPage",

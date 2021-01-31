@@ -1,21 +1,19 @@
 <template>
   <div class="container">
     <burgerMenu></burgerMenu>
-    <posts></posts>
+    <post></post>
   </div>
 </template>
 
 <script>
-import posts from "../components/posts.vue";
-/*import rules from "../components/rules.vue";*/
+import post from "../components/post.vue";
 import burgerMenu from "../components/burgerMenu.vue";
 
 export default {
-  name: "postsPage",
+  name: "postPage",
   components: {
     burgerMenu: burgerMenu,
-    posts: posts,
-    /*mainHeader: mainHeader,*/
+    post: post,
   },
 };
 </script>

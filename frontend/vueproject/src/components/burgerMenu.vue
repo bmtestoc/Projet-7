@@ -1,39 +1,67 @@
 <template>
-    <Slide right>
+    <Slide right width="350">
       <a id="addPost" href="#/">
         <span><i class="fas fa-plus"></i> Créer un sujet</span>
       </a>
       <a id="allRead" href="#/">
         <span><i class="far fa-flag"></i> Tout marquer comme lu</span>
       </a>
-      <a id="myAccount" href="#/">
-        <span><i class="fas fa-cogs"></i> Mon compte</span>
+      <a id="myAccount" href="/myaccount">
+        <span><i class="far fa-user"></i> Mon compte</span>
       </a>
-      <a id="cgu" href="#/cgu" target="_blank">
+      <a id="admin" href="/admin">
+        <span><i class="fas fa-users-cog"></i> Administration</span>
+      </a>
+      <a id="cgu" href="/cgu" target="_blank">
         <span><i class="fas fa-book-reader"></i> CGU</span>
       </a>
-      <a id="leave" href="#/">
+      <!--<a id="leave" href="#/">
         <span><i class="fas fa-power-off"></i> Déconnexion</span>
+      </a>-->
+      <a id="leave" href="">
+        <span @click= "leave"><i class="fas fa-power-off"></i> Déconnexion</span>
       </a>
-    </Slide right>
+    </Slide>
 </template>
 
 <script>
-import { Slide } from 'vue-burger-menu'
+
+import { Slide } from "vue-burger-menu";
+import router from "../router/index";
 
 
-    export default {
-  name: 'burgerMenu',
+export default {
+  name: "burgerMenu",
   components: {
-      Slide
+    Slide,
+  },
+
+
+  methods:{
+         leave: function(){
+              localStorage.clear();
+              this.$alert("Déconnexion en cours")
+              router.push('/signin');
+      }
+}
 }
 
-}
 </script>
 
-<style scoped>
+<style>
 a {
-    color: white;
+  color: white;
 }
-
+a:link {
+  text-decoration: none;
+}
+.bm-menu {
+      background-color:rgb(194, 60, 60);
+    }
+.bm-burger-bars {
+    background-color: rgb(194, 60, 60);
+}  
+.bm-burger-button {
+position: fixed;
+}  
 </style>

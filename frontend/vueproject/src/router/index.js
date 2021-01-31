@@ -5,16 +5,16 @@ Vue.use(Router)
 
 import posts from '@/views/posts'
 import users from '@/components/users'
-import post from '@/components/post'
+import post from '@/views/post.vue'
 import connectionPage from '@/views/connection.vue'
 import inscriptionPage from '@/views/inscription.vue'
 import rules from '@/components/rules'
-
-/* POUR TESTS
-import burgerMenu from '@/components/burgerMenu'
-*/
+import component404 from '@/views/error404.vue'
+import userAccount from '@/views/userAccount.vue'
+import admin from '@/views/admin.vue'
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/signup',
@@ -40,7 +40,7 @@ export default new Router({
     },
     {    
       path: '/post/:id',
-      name: 'post',
+      name: 'postPage',
       component: post
     },
     {
@@ -48,12 +48,21 @@ export default new Router({
       name: 'rules',
       component: rules
     
-    }
-    /* POUR TESTS,
+    },
     {
-      path: '/bk',
-      name: 'burgerMenu',
-      component: burgerMenu
-    }*/
+      path: '*',
+      component: component404
+    
+    },
+    {
+      path: '/myaccount',
+      name: 'userAccountPage',
+      component: userAccount
+    },
+    {
+      path: '/admin',
+      name: 'adminPage',
+      component: admin
+    }
   ]
 })

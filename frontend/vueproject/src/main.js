@@ -15,11 +15,21 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 //Vue.use(IconsPlugin)
+import VueSimpleAlert from "vue-simple-alert";
+Vue.use(VueSimpleAlert);
 
-/* eslint-disable no-new */
+// eslint-disable no-new
 new Vue({
   el: '#app',
   router,
   components: { App },
   template: '<App/>'
 })
+
+// Pour la gestion du format des dates heures
+import moment from 'moment';
+Vue.filter('formatDate', function(value) {
+  if (value) {
+      return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
+  }
+});

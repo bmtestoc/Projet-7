@@ -5,10 +5,10 @@
     <p>&copy; 2021 - Groupomania</p>
   </div>
   <div class="social">
-    <a href="#" class="support">Contact us</a>
-    <a href="#" class="face">f</a>
-    <a href="#" class="tweet">t</a>
-    <a href="#" class="linked">in</a>
+    <a href="mailto:moderateur@groupomania.com" class="support">Contact us</a>
+    <a href="https://fr-fr.facebook.com/groupomania" class="face">f</a>
+    <a href="https://twitter.com/groupomania" class="tweet">t</a>
+    <a href="https://fr.linkedin.com/company/groupomania" class="linked">in</a>
   </div>
 
 </div>

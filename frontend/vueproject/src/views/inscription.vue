@@ -10,7 +10,6 @@
 import inscription from "../components/inscription.vue";
 import mainFooter from "../components/mainFooter.vue";
 import mainHeader from "../components/mainHeader.vue";
-import rules from "../components/rules.vue";
 
 export default {
   name: "inscriptionPage",

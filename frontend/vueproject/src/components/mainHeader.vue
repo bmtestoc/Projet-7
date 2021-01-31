@@ -1,12 +1,12 @@
 <template>
 <header class="site-header">
   <div class="site-identity">
-    <a href="www.groupomania.com"><img src="../assets/icon-left-font.png" alt="Groupomania" /></a>
+    <a href="www.groupomania.com"><img src="../assets/icon-above-font.png" alt="Groupomania" /></a>
     <h1>Bienvenue sur le réseau social des collaborateurs de Groupomania</h1>
   </div>  
   <nav class="site-navigation">
     <ul class="nav">
-      <li><a href="#/cgu" target="_blank">Conditions générales d'utilisation</a></li> 
+      <li><a href="/cgu" target="_blank">Conditions générales d'utilisation</a></li> 
     </ul>
   </nav>
 </header>
@@ -53,7 +53,7 @@ a {
 }
 
 .site-identity img {
-  max-width: 55px;
+  max-width: 65px;
   float: left;
   margin: 0 10px 0 0;
 }

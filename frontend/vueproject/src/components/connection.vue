@@ -9,6 +9,7 @@
         <input
           type="text"
           class="form-control"
+          placeholder="Login"
           name
           value
           id="login"
@@ -21,6 +22,7 @@
         <input
           type="password"
           class="form-control"
+          placeholder="Mot de passe"
           name
           value
           id="password"
@@ -30,7 +32,7 @@
         <small id="noAccess" class="text-danger"></small>
       </div>
       <button type="submit" class="btn btn-primary">Connexion</button>
-      <p>Vous n'avez pas encore de compte ? Cliquer <a href="/#/signup">ici</a> pour vous inscrire</p>
+      <p>Vous n'avez pas encore de compte ? Cliquer <a href="/signup">ici</a> pour vous inscrire</p>
     </form>
   </div>
 </template>
@@ -51,13 +53,10 @@ export default {
       //envoie des informations de connexion à l'API pour authentification
       let token = "";
       if (this.login == "" || this.password == "") {
-        alert(
-          "Veuillez entrer votre login et votre mot de passe"
-        );
+        this.$alert("Veuillez entrer votre login et votre mot de passe");
       } else {
-        axios
-          .post(
-            "http://localhost:5010/api/user/login",
+        axios.post(
+          "http://localhost:5010/api/user/login",
             {
               login: this.login,
               password: this.password
@@ -70,26 +69,32 @@ export default {
             }
           )
           .then(response => {
-            //Si authentification réussie autorisation d'accès au mur pour les utilisateur
-            // ou au tableau de bord admin pour l'administrateur de l'applcation
-            let reponse = response.data;
-            console.log("Vous êtes connecté(e) !");
+            //Si authentification réussie, redirection vers la page des posts
+            /*let reponse = response.data;
+            this.$alert("Bienvenue !");
             let userObject = JSON.stringify(reponse);
             this.$localStorage.set("user", userObject);
             let user = JSON.parse(this.$localStorage.get("user"));
             token = user.token;
-            if (user.status == "admin") {
-              window.location.href = "http://localhost:8080/#/posts";
-              location.reload(true);
-            } else {
-              window.location.href = "http://localhost:8080/#/posts";
-              location.reload(true);
-            }
+            window.location.href = "http://localhost:8080/posts";
+            location.reload(true);*/
+            let reponse = response.data;
+            console.log(response.data);
+            this.$alert("Bienvenue "+response.data.userLogin+" !");
+let userObject = JSON.stringify(reponse);
+            localStorage.setItem("user", userObject);
+            let user = JSON.parse(localStorage.getItem("user"));
+            //Token d'authentification
+            token = user.token; 
+            localStorage.setItem("user_token", token);
+            //Redirection vers les posts
+            window.location.href = "http://localhost:8080/posts";
+
           })
+          //Si échec authentification, avertissement de l'utilisateur
           .catch(() => {
-            console.log("Echec de la connexion"); //En cas d'echec envoie de l'information à l'utilisateur
-            document.querySelector("#noAccess").innerHTML =
-              "Login ou mot de  passe incorrect";
+            this.$alert("Echec de la connexion");
+            document.querySelector("#noAccess").innerHTML = "Login ou mot de passe incorrect";
           });
       }
     }
