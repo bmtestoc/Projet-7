@@ -27,7 +27,13 @@ exports.deleteComment = (req, res, next) => {
         { id: { [Op.eq]: postCommentId } } : null;
     postComment.destroy({ where: condition })
         .then(data => {
-            res.sendStatus(data);
+            let message = 'Commentaire supprimé avec succès';
+            let statut = 200;
+            if (data === 0) {
+                message = 'Commentaire inexistant';
+                statut = 404;
+            }
+            res.status(statut).json({ message: message });
         })
         .catch(err => {
             res.status(500).send({
@@ -40,7 +46,7 @@ exports.deleteComment = (req, res, next) => {
 //Affichage de tous les commentaires
 exports.getAllComments = (req, res, next) => {
     const search = req.query.search;
-    const offset = parseInt(req.query.offset);
+    
     var condition = search ?
         {
             [Op.or]: [
@@ -48,7 +54,8 @@ exports.getAllComments = (req, res, next) => {
                 { email: { [Op.like]: `%${search}%` } }
             ]
         } : null;
-        postComment.findAll({ where: condition,
+        
+        /*postComment.findAll({ where: condition,
             order: [['createdAt', 'DESC']],
             offset: offset,
             limit: 100
@@ -61,7 +68,17 @@ exports.getAllComments = (req, res, next) => {
                 message:
                     err.message || "Pas de résultat pour cette recherche."
             });
-        })
+        })*/
+        (async () => {
+            //console.log(req);
+            const postId = req.query.post_id;
+           //console.log(req.query);
+            comments = await db.sequelize.query("SELECT user.login, post_comment.* FROM `post_comment` INNER JOIN user ON user.id = post_comment.user_id WHERE `post_id` = :id ORDER BY `createdAt` DESC", {
+                replacements: { id: postId },
+                type: db.sequelize.QueryTypes.SELECT
+            });
+            return res.status(200).json(comments);
+        })();
     };
 
 
@@ -95,7 +112,12 @@ exports.getOneComment = (req, res, next) => {
     const postCommentId = req.params.id;
     var condition = postCommentId ?
         { id: { [Op.eq]: postCommentId } } : null;
-        postComment.findOne({ where: condition })
+        postComment.findOne({ 
+            where: condition,
+            include: [
+                { model: User, where: { id: req.params.userId } }
+            ]
+        })
         .then(data => {
             res.send(data);
         })

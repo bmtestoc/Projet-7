@@ -31,6 +31,10 @@ module.exports = (sequelize, Sequelize) => {
         tableName: 'post'
     });
 
+    /*Post.associate = function(models) {
+        Post.belongsTo(models.User, {foreignKey: 'user_id', as: 'user'})
+    };*/
+
     return Post;
     
 };

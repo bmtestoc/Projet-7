@@ -20,7 +20,11 @@ exports.signup = (req, res, next) => {
         is_active: 1
       })
           .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-          .catch(error => res.status(400).json({ message: 'Utilisateur déjà existant !' }));
+          //.catch(error => res.status(400).json({ message: 'Utilisateur déjà existant !' }));
+          .catch(error => res.status(400).json({ 
+            message: 'Utilisateur déjà existant !',
+            erreur: error
+          }));
   }
   else {
     return res.status(404).json({ message: 'Le mot de passe doit contenir au moins un nombre, une minuscule, une majuscule et être composé de 6 caractères minimum' });
@@ -43,9 +47,10 @@ exports.login = (req, res, next) => {
             return res.status(404).json({ message: "Mot de passe incorrect !" });
           }
           res.status(200).json({
-            userId: user._id,
+            userId: user.id,
+            userLogin: user.login,
             token: jwt.sign(
-              { userId: user._id },
+              { userId: user.id },
               'RANDOM_TOKEN_SECRET',
               { expiresIn: '24h' }
             )
@@ -58,20 +63,101 @@ exports.login = (req, res, next) => {
 
 //Suppression d'un user
 exports.deleteUser = (req, res, next) => {
-  const userId = req.params.id;
-  var condition = userId ?
-    { id: { [Op.eq]: userId } } : null;
-  User.destroy({ where: condition })
-    .then(data => {
-      res.sendStatus(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Cet ID est inconnu."
-      });
-    });
+  //TODO : on récupère le user connecté
+  //si c'est le même user que userid ou s'il est admin (profile = 1), alors on autorise l'action
+  try {
+    if (req.headers && req.headers.authorization) {
+        var authorization = req.headers.authorization.split(' ')[1],
+            decoded;
+        try {
+            decoded = jwt.verify(authorization, 'RANDOM_TOKEN_SECRET');
+        } catch (e) {
+            return res.status(401).send('unauthorized');
+        }
+        
+        var connectedUserId = decoded.userId;
+        // Fetch the user by id 
+        User.findOne({ where: { id: connectedUserId } }).then(function(connectedUser){
+            // Do something with the user
+            //return res.send(200);
+            //return res.status(200).json(user);
+
+            const userId = parseInt(req.params.id);
+            var condition = userId ?
+              { id: { [Op.eq]: userId } } : null;
+
+            if( connectedUserId ===  userId || connectedUser.profile === 1) {
+
+              User.destroy({ where: condition })
+                .then(data => {
+                  let message = 'Utilisateur supprimé avec succès';
+                  let statut = 200;
+                  if(data === 0) {
+                    message = 'Utilisateur inexistant';
+                    //on renvoie le statut 404 not found si utilisateur inexistant
+                    statut = 404;
+                  }
+                  res.status(statut).json({message: message});
+                })
+                .catch(err => {
+                  res.status(500).send({
+                    message:
+                      err.message || "Cet ID est inconnu."
+                  });
+                });
+            }
+            else {
+              res.status(401).json({message: "Action non autorisée"});
+            }
+
+        })
+        .catch(err => {
+          res.status(500).json({
+            message:
+              err.message
+          })
+        })
+        ;
+    }
+  }
+  catch(err) {
+    console.log(err);
+    return res.status(500).send({message: err.message});
+  }
 };
+
+exports.getUserDataFromToken = function(req,res){
+  try {
+    if (req.headers && req.headers.authorization) {
+        var authorization = req.headers.authorization.split(' ')[1],
+            decoded;
+        try {
+            decoded = jwt.verify(authorization, 'RANDOM_TOKEN_SECRET');
+        } catch (e) {
+            return res.status(401).send('unauthorized');
+        }
+        
+        var userId = decoded.userId;
+        // Fetch the user by id 
+        User.findOne({ where: { id: userId } }).then(function(user){
+            // Do something with the user
+            //return res.send(200);
+            return res.status(200).json(user);
+        })
+        .catch(err => {
+          res.status(500).json({
+            message:
+              err.message
+          })
+        })
+        ;
+    }
+  }
+  catch(err) {
+    console.log(err);
+    return res.status(500).send({message: err.message});
+  }
+}
 
 //Affichage de tous les users
 exports.getAllUser = (req, res, next) => {

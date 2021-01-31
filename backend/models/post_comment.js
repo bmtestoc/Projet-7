@@ -27,5 +27,9 @@ module.exports = (sequelize, Sequelize) => {
         tableName: 'post_comment'
     });
 
+    /*postComment.associate = function(models) {
+        postComment.belongsTo(models.User, {foreignKey: 'user_id', as: 'user'})
+    };*/
+
     return postComment;
 };
