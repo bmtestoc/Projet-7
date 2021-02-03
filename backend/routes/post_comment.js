@@ -11,7 +11,7 @@ const multer = require('../middleware/multer-config');
 // Routes de l'API
 router.get('/', /*auth, */postCommentCtrl.getAllComments);
 router.get('/:id', /*auth, */postCommentCtrl.getOneComment);
-router.post('/', /*auth, */multer, postCommentCtrl.createComment);
+router.post('/', auth, multer, postCommentCtrl.createComment);
 router.put('/:id', /*auth, */multer, postCommentCtrl.updateComment);
 router.delete('/:id', /*auth, */postCommentCtrl.deleteComment);
 

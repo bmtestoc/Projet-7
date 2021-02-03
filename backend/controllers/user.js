@@ -35,7 +35,7 @@ exports.signup = (req, res, next) => {
 exports.login = (req, res, next) => {
   User.findOne({ where: { login: req.body.login } })
     .then(user => { console.log(user);
-      if (!user) {
+      if (!user || user.is_active === 0) {
         return res.status(401).json({ message: 'Utilisateur non trouvé !' });
       }
 
@@ -49,6 +49,7 @@ exports.login = (req, res, next) => {
           res.status(200).json({
             userId: user.id,
             userLogin: user.login,
+            profile: user.profile,
             token: jwt.sign(
               { userId: user.id },
               'RANDOM_TOKEN_SECRET',
@@ -194,12 +195,17 @@ exports.updateUser = (req, res, next) => {
   if (req.body.picture) {
     userUpdate['picture'] = req.body.picture;
   }
-  if (req.body.profile) {
+  if (typeof req.body.profile !== 'undefined') {
     userUpdate['profile'] = req.body.profile;
   }
   if (req.body.email) {
     userUpdate['email'] = req.body.email;
   }
+  //!== undefined car is_active peut être égale à 0
+  if (typeof req.body.is_active !== 'undefined') {
+    userUpdate['is_active'] = req.body.is_active;
+  }
+  //console.log(req.body);
   var condition = userId ?
     { id: userId } : null;
   User.update(
