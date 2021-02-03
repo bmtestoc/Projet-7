@@ -49,4 +49,11 @@ export default {
 .fa-user {
 font-weight: bold;
 }
+
+@media (max-width:993px) and (orientation: portrait) {
+.navbar-collapse {
+  display: block;
+  text-align: right;
+}
+}
 </style>

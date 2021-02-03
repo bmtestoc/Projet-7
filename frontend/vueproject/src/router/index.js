@@ -12,57 +12,123 @@ import rules from '@/components/rules'
 import component404 from '@/views/error404.vue'
 import userAccount from '@/views/userAccount.vue'
 import admin from '@/views/admin.vue'
+import addPost from '@/views/addPost.vue'
 
-export default new Router({
+let router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/signup',
       name: 'inscriptionPage',
-      component: inscriptionPage
-    
+      component: inscriptionPage,
+      meta: {
+        guest: true
+      }
     },
     {
       path: '/signin',
       name: 'connectionPage',
-      component: connectionPage
-    
+      component: connectionPage,
+      meta: {
+        guest: true
+      }
     },
-    {    
+    {
       path: '/posts',
       name: 'posts',
-      component: posts
+      component: posts,
+      meta: {
+        requiresAuth: true
+      }
     },
-    {    
+    {
       path: '/users',
       name: 'users',
-      component: users
+      component: users,
+      meta: {
+        requiresAuth: true,
+        isAdmin: true
+      }
     },
-    {    
+    {
       path: '/post/:id',
       name: 'postPage',
-      component: post
+      component: post,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/cgu',
       name: 'rules',
-      component: rules
-    
+      component: rules,      
     },
     {
       path: '*',
-      component: component404
-    
+      component: component404,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/myaccount',
       name: 'userAccountPage',
-      component: userAccount
+      component: userAccount,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/admin',
       name: 'adminPage',
-      component: admin
+      component: admin,
+      meta: {
+        requiresAuth: true,
+        isAdmin: true
+      }
+    },
+    {
+      path: '/add',
+      name: 'addPostPage',
+      component: addPost,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (localStorage.getItem('user_token') == null) {
+      next({
+        path: '/signin',
+        params: { nextUrl: to.fullPath }
+      })
+    } else {
+      let user = JSON.parse(localStorage.getItem('user'))
+      if (to.matched.some(record => record.meta.isAdmin)) {
+        console.log(user);
+        if (user.profile === 1) {
+          next()
+        }
+        else {
+          next({ name: 'posts' })
+        }
+      } else {
+        next()
+      }
+    }
+  } else if (to.matched.some(record => record.meta.guest)) {
+    if (localStorage.getItem('user_token') == null) {
+      next()
+    }
+    else {
+      next({ name: 'posts' })
+    }
+  } else {
+    next()
+  }
+})
+
+export default router

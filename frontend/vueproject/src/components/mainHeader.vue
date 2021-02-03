@@ -72,4 +72,10 @@ a {
   margin: 1.4em 1em 1em 1em;
 }
 
+@media (max-height:703px) and (orientation: portrait) {
+.site-identity img {
+  display: none;
+}
+}
+
 </style>

@@ -3,7 +3,7 @@
     <a href="www.groupomania.com"
       ><img src="../assets/icon-left-font2.png" alt="Groupomania"
     /></a>
-    <ul v-for="post in posts" @click="goToPost(post.post_id)">
+    <ul v-for="post in posts">
       <span v-if="post.nb_hours_post < 48"
         ><i class="far fa-bell" title="Nouveau !"></i
       ></span>
@@ -11,17 +11,17 @@
         <i class="far fa-envelope"></i> Posté par {{ post.user_login }} le
         {{ post.post_createdAt | formatDate }}
       </div>
-      <div id="title">{{ post.post_title }}</div>
-      <div id="content">{{ post.post_content }}</div>
+      <div id="title" @click="goToPost(post.post_id)">{{ post.post_title }}</div>
+      <div id="content" @click="goToPost(post.post_id)">{{ post.post_content }}</div>
       <div id="comments">
         <i class="far fa-comments"></i> {{ post.nb_comments }} commentaire(s)
       </div>
-      <div id="newComments" v-if="post.nb_comments_unread > 0">
+      <div id="newComments" v-if="post.nb_comments_unread > 0 && post.last_read !== NULL">
         <span class="light">
           {{ post.nb_comments_unread }} nouveau(x) commentaire(s)</span
         >
       </div>
-      <div v-if="post.delete_link == 1" id="deleteButton">
+      <div v-if="user.profile == 1 || user.userId == post.post_user_id" id="deleteButton">
         <b-button
           class="btn btn-sm"
           v-b-modal.modal-delete-post
@@ -72,6 +72,11 @@ export default {
         },
       })
     ).data;
+  },
+  computed: {
+    user() {
+      return JSON.parse(localStorage.getItem("user"))
+    }
   },
   methods: {
     goToPost: function (postId) {

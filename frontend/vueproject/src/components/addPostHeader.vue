@@ -5,7 +5,7 @@
     <div class="container">
       <a class="navbar-brand" rel="nofollow" target="_blank" href="http://www.groupomania.com" style="text-transform: uppercase;"> GROUPOMANIA</a>
       <div class="collapse navbar-collapse" id="navbarResponsive">
-<p>MON COMPTE <i class="far fa-user"></i></p>
+<p>CREER UN SUJET <i class="far fa-envelope"></i></p>
       </div>
     </div>
   </nav>
@@ -15,7 +15,7 @@
 <script>
 
 export default {
-  name: 'accountHeader'
+  name: 'addPostHeader'
 }
 
 </script>

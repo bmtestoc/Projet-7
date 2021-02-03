@@ -121,7 +121,8 @@ export default {
             this.$alert("Merci pour votre inscription, vous pouvez maintenant vous connecter");
             window.location.href = "http://localhost:8080/signin";
           })
-          .catch(() => this.$alert("Echec de l'inscription"));
+          //.catch((err) => this.$alert(err.message));
+          .catch(() => this.$alert("Ce login existe déjà, veuillez en choisir un autre"));
       }
     },
 

@@ -39,6 +39,7 @@
 
 <script>
 import axios from "axios";
+import router from "../router/index";
 
 export default {
   name: "connection",
@@ -88,7 +89,8 @@ let userObject = JSON.stringify(reponse);
             token = user.token; 
             localStorage.setItem("user_token", token);
             //Redirection vers les posts
-            window.location.href = "http://localhost:8080/posts";
+            //window.location.href = "http://localhost:8080/posts";
+            router.push('posts');
 
           })
           //Si échec authentification, avertissement de l'utilisateur
@@ -100,6 +102,7 @@ let userObject = JSON.stringify(reponse);
     }
   }
 };
+
 </script>
 
 <style  scoped>

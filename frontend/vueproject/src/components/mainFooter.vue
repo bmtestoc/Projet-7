@@ -110,5 +110,10 @@ a:hover {
   width: 40%;
 }
 
+@media (max-height:771px) and (orientation: portrait) {
+.footer {
+  display: none;
+}
+}
 
 </style>

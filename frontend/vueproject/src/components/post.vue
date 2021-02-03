@@ -47,7 +47,7 @@
               <h3>Souhaitez-vous vraiment supprimer ce commentaire?</h3>
             </div>
             <b-button class="mt-3" block @click="deleteComment(postComment.id)"
-              >Valider {{postComment}}</b-button
+              >Valider</b-button
             >
             <b-button
               class="mt-3"
@@ -70,7 +70,7 @@
           name="textComment"
         ></textarea>
       </div>
-      <button class="btn btn-primary" type="submit">Ajouter</button>
+      <button class="btn btn-primary" type="submit"><i class="far fa-envelope"></i> Envoyer</button>
     </form>
     <div id="return"><a href="/posts"><button type="button" class="btn btn-primary">Retour</button></a></div>
 
@@ -103,6 +103,8 @@ export default {
       )
     ).data;
 
+  
+
     //récupération des commentaires liés au post
     this.postComments = (
       await axios.get(
@@ -122,6 +124,64 @@ export default {
         },
       })
     ).data;
+
+  //on va chercher la ligne de la table post_read avec le user_id et le post_id qui nous intéressent
+  axios.get(
+        "http://localhost:5010/api/post_read/" + this.userConnected.id + "/" + this.post.id,
+        {
+          headers: {
+            Authorization: `token ${localStorage.getItem("user_token")}`,
+          },
+        }
+      ).then(reponse => {
+        if(reponse.data === null) {
+          //on ajoute l'enregistrement dans la table
+          console.log('pas de post_read trouvé')
+          axios.post("http://localhost:5010/api/post_read/", 
+            {
+              user_id: this.userConnected.id,
+              post_id: this.post.id,
+              last_read: new Date()
+            },
+            {
+              headers: {
+                Authorization: `token ${localStorage.getItem("user_token")}`,
+              },
+            }
+          )
+          .then(response => {
+            console.log(response);
+          })
+          //Si échec authentification, avertissement de l'utilisateur
+          .catch((err) => {
+            console.log(err);
+          });
+        }
+        else {
+          //on met à jour l'enregistrement existant
+          axios.put("http://localhost:5010/api/post_read/"+reponse.data.id, 
+            {
+              last_read: new Date()
+            },
+            {
+              headers: {
+                Authorization: `token ${localStorage.getItem("user_token")}`,
+              },
+            }
+          )
+          .then(response => {
+            console.log(response)
+          })
+          //Si échec authentification, avertissement de l'utilisateur
+          .catch((err) => {
+            console.log(err)
+          });
+        }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    
   },
   methods: {
     modalId: function (id) {
@@ -257,5 +317,13 @@ img {
   position: absolute;
   top: 30px;
   left: 40px;
+}
+
+@media (max-height:850px) and (orientation: portrait) {
+#return {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+}
 }
 </style>
