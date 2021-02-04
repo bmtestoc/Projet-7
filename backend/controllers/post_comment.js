@@ -70,9 +70,7 @@ exports.getAllComments = (req, res, next) => {
             });
         })*/
         (async () => {
-            //console.log(req);
             const postId = req.query.post_id;
-           //console.log(req.query);
             comments = await db.sequelize.query("SELECT user.login, post_comment.* FROM `post_comment` INNER JOIN user ON user.id = post_comment.user_id WHERE `post_id` = :id ORDER BY `createdAt` DESC", {
                 replacements: { id: postId },
                 type: db.sequelize.QueryTypes.SELECT

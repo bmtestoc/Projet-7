@@ -205,7 +205,6 @@ exports.updateUser = (req, res, next) => {
   if (typeof req.body.is_active !== 'undefined') {
     userUpdate['is_active'] = req.body.is_active;
   }
-  //console.log(req.body);
   var condition = userId ?
     { id: userId } : null;
   User.update(

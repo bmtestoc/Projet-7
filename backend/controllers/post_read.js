@@ -47,7 +47,6 @@ exports.updatePostRead = (req, res, next) => {
 
 //Consulter une lecture de commentaire
 exports.getOnePostRead = (req, res, next) => {
-//    console.log(req.params);
     const PostReadUserId = req.params.userid;
     const PostReadPostId = req.params.postid;
     const conditions = {
