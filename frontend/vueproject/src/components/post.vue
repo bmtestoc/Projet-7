@@ -72,7 +72,7 @@
       </div>
       <button class="btn btn-primary" type="submit"><i class="far fa-envelope"></i> Envoyer</button>
     </form>
-    <div id="return"><a href="/posts"><button type="button" class="btn btn-primary">Retour</button></a></div>
+    
 
   </div>
 </template>
@@ -189,7 +189,6 @@ export default {
       return 'modal-delete-comment-'+id
     },
     submitAddComment: function () {
-      //console.log(this.userConnected);
       if (this.textComment.trim() === "") {
         this.$alert("Le commentaire ne peut pas être vide");
         return false;

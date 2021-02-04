@@ -112,7 +112,6 @@ export default {
             let reponse = response.data;
             console.log(response);
             //let userObject = JSON.stringify(reponse);
-            //console.log(localStorage);
             //localStorage.setItem("user", userObject);
             //let user = JSON.parse(localStorage.getItem("user"));
             //Token d'authentification

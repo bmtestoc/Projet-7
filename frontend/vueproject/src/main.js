@@ -18,6 +18,14 @@ Vue.use(BootstrapVue)
 import VueSimpleAlert from "vue-simple-alert";
 Vue.use(VueSimpleAlert);
 
+//scroll infini
+import InfiniteLoading from 'vue-infinite-loading';
+Vue.use(InfiniteLoading,{
+  slots: {
+    noMore: 'Fin des posts', // you can pass a string value
+  },
+});
+
 // eslint-disable no-new
 new Vue({
   el: '#app',

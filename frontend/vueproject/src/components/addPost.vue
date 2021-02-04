@@ -1,7 +1,7 @@
 <template>
 
 <div class="container">
-  <div id="return"><a href="/posts"><button type="button" class="btn btn-primary">Retour</button></a></div>
+  <!--<div id="return"><a href="/posts"><button type="button" class="btn btn-primary">Retour</button></a></div>-->
 <form method="POST" @submit.prevent="submitAddPost">
       <div class="form-group">
         <!--<label for="add_post"><b>Créer un sujet</b></label>-->
@@ -52,7 +52,6 @@ export default {
   },
   methods: {
 submitAddPost: function () {
-      //console.log(this.userConnected);
       if (this.title.trim() === "" || this.content.trim() === "") {
         this.$alert("Le titre ou le contenu est vide");
         return false;
@@ -96,11 +95,11 @@ submitAddPost: function () {
 .container button {
   margin-bottom: 30px;
 }
-#return {
+/*#return {
   position: absolute;
   top: 70px;
   left: 50px;
-}
+}*/
 #title {
 margin-top: 100px;
 }
@@ -109,12 +108,12 @@ margin-top: 20px;
 }
 
 @media (max-height:850px) and (orientation: portrait) {
-#return {
+/*#return {
   position: relative;
   top: 10px;
   left: 1px;
   margin: auto;
-}
+}*/
 #title {
 margin-top: 20px;
 }

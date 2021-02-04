@@ -7,15 +7,16 @@
       </div>
   </div>-->
   <input type="text" class="form-control" v-model="keyword" placeholder="Rechercher" />
-  <b-table responsive striped hover :items="items" :fields="fields" :keyword="keyword" >
+  <div class="table-responsive">
+  <b-table stacked="md" striped hover :items="items" :fields="fields" :keyword="keyword" >
     <template #cell(is_active)="data">
         <!--{{data}}-->
         <i title="Désactiver" v-if="data.item.is_active == 1" v-on:click="activeInactiveUser(data.item.is_active, data.item.id)" :class="' cursorPointer fas fa-check'"></i>
         <i title="Activer" v-if="data.item.is_active == 0" v-on:click="activeInactiveUser(data.item.is_active, data.item.id)" :class="' cursorPointer fas fa-minus-circle'"></i>
     </template>
   </b-table>
-<div id="return"><a href="/posts"><button type="button" class="btn btn-primary">Retour</button></a></div>
-
+<!--<div id="return"><a href="/posts"><button type="button" class="btn btn-primary">Retour</button></a></div>-->
+</div>
 </div>
 
 </template>
@@ -83,8 +84,7 @@ data() {
           //on l'active
           newValueIsActive = 1;
         }
-        console.log(newValueIsActive);
-        console.log(userId);
+        
         //todo appeler API pour push la nouvelle valeur de is_active au userId
         axios.put("http://localhost:5010/api/user/"+userId, 
           {
@@ -121,21 +121,21 @@ data() {
 .container {
   margin-top: 30px;
 }
-#return {
+/*#return {
   position: absolute;
   top: 70px;
   left: 40px;
-}
+}*/
 .cursorPointer {
     cursor: pointer;
 }
 
-@media (max-height:850px) and (orientation: portrait) {
-#return {
+@media (max-width:850px) and (orientation: portrait) {
+/*#return {
   position: relative;
   top: 10px;
   left: 1px;
   margin: auto;
-}
+}*/
 }
 </style>

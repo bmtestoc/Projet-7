@@ -5,7 +5,7 @@
     <div class="container">
       <a class="navbar-brand" rel="nofollow" target="_blank" href="http://www.groupomania.com" style="text-transform: uppercase;"> GROUPOMANIA</a>
       <div class="collapse navbar-collapse" id="navbarResponsive">
-<p>GESTION DES UTILISATEURS <i class="fas fa-users-cog"></i></p>
+<p>GESTION DES <br>UTILISATEURS <i class="fas fa-users-cog"></i></p>
       </div>
     </div>
   </nav>
@@ -50,10 +50,14 @@ export default {
 font-weight: bold;
 }
 
-@media (max-width:993px) and (orientation: portrait) {
+@media (max-width:415px) and (orientation: portrait) {
 .navbar-collapse {
   display: block;
   text-align: right;
 }
+#navbarResponsive p {
+    padding-left: 100px;
 }
+}
+
 </style>

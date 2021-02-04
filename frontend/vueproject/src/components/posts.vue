@@ -50,6 +50,7 @@
         <!--<button type="button" class="btn btn-outline-secondary btn-sm"><i class="far fa-trash-alt"></i> Supprimer</button>-->
       </div>
     </ul>
+    <infinite-loading @infinite="infiniteHandler"></infinite-loading>
   </div>
 </template>
 
@@ -62,16 +63,17 @@ export default {
   data() {
     return {
       posts: [],
+      page: 1,
     };
   },
   async created() {
-    this.posts = (
+    /*this.posts = (
       await axios.get("http://localhost:5010/api/post", {
         headers: {
           Authorization: `token ${localStorage.getItem("user_token")}`,
         },
       })
-    ).data;
+    ).data.hits;*/
   },
   computed: {
     user() {
@@ -100,6 +102,26 @@ export default {
         .catch((errors) => {
           console.log(errors);
           this.$alert("Post inexistant");
+        });
+    },
+    infiniteHandler($state) {
+      axios
+        .get("http://localhost:5010/api/post/", {
+          params: {
+            page: this.page,
+          },
+          headers: {
+            Authorization: `token ${localStorage.getItem("user_token")}`,
+          }
+        })
+        .then(({ data }) => {
+          if (data.hits.length) {
+            this.page += 1;
+            this.posts.push(...data.hits);
+            $state.loaded();
+          } else {
+            $state.complete();
+          }
         });
     },
   },

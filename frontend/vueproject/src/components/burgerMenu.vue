@@ -1,5 +1,8 @@
 <template>
     <Slide right width="350">
+      <a id="posts" href="/posts">
+        <span><i class="far fa-comments"></i> Forum</span>
+      </a>
       <a id="addPost" href="/add">
         <span><i class="far fa-envelope"></i> Créer un sujet</span>
       </a>
@@ -9,9 +12,6 @@
       <a id="myAccount" href="/myaccount">
         <span><i class="far fa-user"></i> Mon compte</span>
       </a>
-      <!--<a id="admin" href="/admin">
-        <span><i class="fas fa-users-cog"></i> Administration</span>
-      </a>-->
       <a v-if="userConnected.profile === 1" id="admin" href="/admin">
         <span><i class="fas fa-users-cog"></i> Administration</span>
       </a>
@@ -77,5 +77,12 @@ a:link {
 }  
 .bm-burger-button {
 position: fixed;
+margin-top: 30px;
 }  
+
+@media (max-width:634px) and (orientation: portrait) {
+.bm-burger-button {
+margin-top: -20px;
+}  
+}
 </style>
