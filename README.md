@@ -1,4 +1,4 @@
-![Image](frontend/vueproject/src/assets/icon-left-font2.png)
+![Image](frontend/vueproject/src/assets/icon-left-font3.png)
 
 1/ Cloner le repository GitHub 
 Il est situé à l'adresse https://github.com/bmtestoc/Projet-7/tree/main
