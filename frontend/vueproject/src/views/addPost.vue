@@ -3,8 +3,7 @@
     <addPostHeader></addPostHeader>
     <burgerMenu></burgerMenu>
     <addPost></addPost>
-    </div>
-  
+  </div>
 </template>
 
 <script>
@@ -17,7 +16,7 @@ export default {
   components: {
     addPostHeader: addPostHeader,
     burgerMenu: burgerMenu,
-    addPost: addPost
+    addPost: addPost,
   },
 };
 </script>

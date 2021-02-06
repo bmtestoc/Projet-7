@@ -4,7 +4,6 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 import posts from '@/views/posts'
-import users from '@/components/users'
 import post from '@/views/post.vue'
 import connectionPage from '@/views/connection.vue'
 import inscriptionPage from '@/views/inscription.vue'
@@ -16,6 +15,7 @@ import addPost from '@/views/addPost.vue'
 
 let router = new Router({
   mode: 'history',
+  // paramétrage des URL et de leur accès
   routes: [
     {
       path: '/signup',
@@ -41,16 +41,7 @@ let router = new Router({
         requiresAuth: true
       }
     },
-    {
-      path: '/users',
-      name: 'users',
-      component: users,
-      meta: {
-        requiresAuth: true,
-        isAdmin: true
-      }
-    },
-    {
+        {
       path: '/post/:id',
       name: 'postPage',
       component: post,
@@ -97,7 +88,7 @@ let router = new Router({
     }
   ]
 })
-
+// regles de redirection en fonction des droits
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (localStorage.getItem('user_token') == null) {
@@ -108,7 +99,6 @@ router.beforeEach((to, from, next) => {
     } else {
       let user = JSON.parse(localStorage.getItem('user'))
       if (to.matched.some(record => record.meta.isAdmin)) {
-        console.log(user);
         if (user.profile === 1) {
           next()
         }

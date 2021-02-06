@@ -4,7 +4,6 @@
     <burgerMenu></burgerMenu>
     <userAccount></userAccount>
   </div>
-  
 </template>
 
 <script>
@@ -17,7 +16,7 @@ export default {
   components: {
     accountHeader: accountHeader,
     burgerMenu: burgerMenu,
-    userAccount: userAccount
+    userAccount: userAccount,
   },
 };
 </script>

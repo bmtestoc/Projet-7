@@ -3,11 +3,15 @@
     <a href="www.groupomania.com"
       ><img src="../assets/icon-left-font2.png" alt="Groupomania"
     /></a>
-    <!--<div id="singlePost" v-bind="post">
-        <p><b>{{post.title}}</b></p> 
-        <div>Créé le {{post.createdAt}}</div>
-        <div>{{post.content}}</div> 
-      </div>-->
+    <div id="return">
+      <a href="/posts"
+        ><i
+          class="far fa-arrow-alt-circle-left fa-3x"
+          title="Retour au forum"
+        ></i
+      ></a>
+    </div>
+    <!-- informations sur le sujet -->
     <div id="thePost">
       <div class="infos">
         <i class="far fa-envelope"></i> Posté le
@@ -16,22 +20,23 @@
       <div id="title">{{ post.title }}</div>
       <div id="content">{{ post.content }}</div>
     </div>
+    <!-- commentaires -->
     <div id="theComments">
       <p><b>Commentaires</b></p>
       <div v-for="postComment in postComments" class="divComment">
-        <!--{{postComment}}
-        {{modalId(postComment.id)}}-->
         <div class="infos">
           <i class="far fa-envelope"></i> Posté le
           {{ postComment.createdAt | formatDate }} par {{ postComment.login }}
         </div>
         <div>{{ postComment.content }}</div>
+        <!-- le bouton supprimer s'affiche si le user est l'auteur du commentaire ou s'il est admin -->
         <div
           v-if="
             userConnected.id == postComment.user_id ||
             userConnected.profile == 1
           "
         >
+          <!-- suppression d'un commentaire -->
           <b-button
             class="btn btn-sm"
             v-b-modal.modal-delete-comment
@@ -59,7 +64,7 @@
         </div>
       </div>
     </div>
-
+    <!-- formulaire d'ajout d'un commentaire -->
     <form method="POST" @submit.prevent="submitAddComment">
       <div class="form-group">
         <label for="add_comment"><b>Ajouter un commentaire</b></label>
@@ -70,10 +75,10 @@
           name="textComment"
         ></textarea>
       </div>
-      <button class="btn btn-primary" type="submit"><i class="far fa-envelope"></i> Envoyer</button>
+      <button class="btn btn-primary" type="submit">
+        <i class="far fa-envelope"></i> Envoyer
+      </button>
     </form>
-    
-
   </div>
 </template>
 
@@ -102,9 +107,6 @@ export default {
         }
       )
     ).data;
-
-  
-
     //récupération des commentaires liés au post
     this.postComments = (
       await axios.get(
@@ -116,7 +118,6 @@ export default {
         }
       )
     ).data;
-
     this.userConnected = (
       await axios.get("http://localhost:5010/api/user/fromtoken", {
         headers: {
@@ -124,69 +125,74 @@ export default {
         },
       })
     ).data;
-
-  //on va chercher la ligne de la table post_read avec le user_id et le post_id qui nous intéressent
-  axios.get(
-        "http://localhost:5010/api/post_read/" + this.userConnected.id + "/" + this.post.id,
+    //on va chercher la ligne de la table post_read avec le user_id et le post_id qui nous intéressent
+    axios
+      .get(
+        "http://localhost:5010/api/post_read/" +
+          this.userConnected.id +
+          "/" +
+          this.post.id,
         {
           headers: {
             Authorization: `token ${localStorage.getItem("user_token")}`,
           },
         }
-      ).then(reponse => {
-        if(reponse.data === null) {
-          //on ajoute l'enregistrement dans la table
-          console.log('pas de post_read trouvé')
-          axios.post("http://localhost:5010/api/post_read/", 
-            {
-              user_id: this.userConnected.id,
-              post_id: this.post.id,
-              last_read: new Date()
-            },
-            {
-              headers: {
-                Authorization: `token ${localStorage.getItem("user_token")}`,
+      )
+      .then((reponse) => {
+        if (reponse.data === null) {
+          // si le post_read n'existe pas, on ajoute l'enregistrement dans la table
+          console.log("pas de post_read trouvé");
+          axios
+            .post(
+              "http://localhost:5010/api/post_read/",
+              {
+                user_id: this.userConnected.id,
+                post_id: this.post.id,
+                last_read: new Date(),
               },
-            }
-          )
-          .then(response => {
-            console.log(response);
-          })
-          //Si échec authentification, avertissement de l'utilisateur
-          .catch((err) => {
-            console.log(err);
-          });
-        }
-        else {
-          //on met à jour l'enregistrement existant
-          axios.put("http://localhost:5010/api/post_read/"+reponse.data.id, 
-            {
-              last_read: new Date()
-            },
-            {
-              headers: {
-                Authorization: `token ${localStorage.getItem("user_token")}`,
+              {
+                headers: {
+                  Authorization: `token ${localStorage.getItem("user_token")}`,
+                },
+              }
+            )
+            .then((response) => {
+              console.log(response);
+            })
+            //Si échec authentification, avertissement de l'utilisateur
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          // si le post_read existe, on met à jour l'enregistrement
+          axios
+            .put(
+              "http://localhost:5010/api/post_read/" + reponse.data.id,
+              {
+                last_read: new Date(),
               },
-            }
-          )
-          .then(response => {
-            console.log(response)
-          })
-          //Si échec authentification, avertissement de l'utilisateur
-          .catch((err) => {
-            console.log(err)
-          });
+              {
+                headers: {
+                  Authorization: `token ${localStorage.getItem("user_token")}`,
+                },
+              }
+            )
+            .then((response) => {
+              console.log(response);
+            })
+            //Si échec authentification, avertissement de l'utilisateur
+            .catch((err) => {
+              console.log(err);
+            });
         }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-    
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
   methods: {
     modalId: function (id) {
-      // `this` points to the vm instance
-      return 'modal-delete-comment-'+id
+      return "modal-delete-comment-" + id;
     },
     submitAddComment: function () {
       if (this.textComment.trim() === "") {
@@ -197,6 +203,7 @@ export default {
         .post(
           "http://localhost:5010/api/comment",
           {
+            // envoi des informations à l'api pour insertion en bdd
             user_id: this.userConnected.id,
             content: this.textComment,
             post_id: this.$route.params.id,
@@ -232,23 +239,6 @@ export default {
           this.$alert("Commentaire inexistant");
         });
     },
-
-    /*getAllComments: function(postId) {
-  axios
-        .get("http://localhost:5010/api/comment/", {
-          headers: {
-            Authorization: `token ${localStorage.getItem("user_token")}`,
-          },
-        })
-        .then((response) => {
-          this.$alert("Post supprimé");
-          window.location.reload(false);
-        })
-        .catch((errors) => {
-          console.log(errors);
-          this.$alert("Post inexistant");
-        });
-}*/
   },
 };
 </script>
@@ -314,15 +304,19 @@ img {
 }
 #return {
   position: absolute;
-  top: 30px;
-  left: 40px;
+  top: 60px;
+  left: 50px;
+}
+.fa-arrow-alt-circle-left {
+  color: rgb(194, 60, 60);
 }
 
-@media (max-height:850px) and (orientation: portrait) {
-#return {
-  position: absolute;
-  top: 10px;
-  left: 20px;
-}
+@media (max-height: 850px) and (orientation: portrait) {
+  #return {
+    position: relative;
+    top: 1px;
+    left: 1px;
+    margin: auto;
+  }
 }
 </style>

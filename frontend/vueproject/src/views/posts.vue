@@ -7,7 +7,6 @@
 
 <script>
 import posts from "../components/posts.vue";
-/*import rules from "../components/rules.vue";*/
 import burgerMenu from "../components/burgerMenu.vue";
 
 export default {
@@ -15,11 +14,9 @@ export default {
   components: {
     burgerMenu: burgerMenu,
     posts: posts,
-    /*mainHeader: mainHeader,*/
   },
 };
 </script>
 
 <style scoped>
-
 </style>

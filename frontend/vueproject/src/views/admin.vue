@@ -1,13 +1,9 @@
 <template>
   <div class="userAcc">
-
     <adminHeader></adminHeader>
-        <burgerMenu></burgerMenu>      
-
+    <burgerMenu></burgerMenu>
     <admin></admin>
-
   </div>
-  
 </template>
 
 <script>
@@ -20,7 +16,7 @@ export default {
   components: {
     adminHeader: adminHeader,
     burgerMenu: burgerMenu,
-    admin: admin
+    admin: admin,
   },
 };
 </script>

@@ -3,7 +3,9 @@
     <div id="nav">
       <h1>Connexion</h1>
     </div>
+    <!-- formulaire -->
     <form method="POST" id="formulaire" @submit.prevent="envoi">
+      <!-- champ login -->
       <div class="form-group col-lg-3 col-sm-6">
         <label for="login">Login</label>
         <input
@@ -15,8 +17,8 @@
           id="login"
           v-model="login"
         />
-        <small id="login" class="form-text text-muted"></small>
       </div>
+      <!-- champ mot de passe -->
       <div class="form-group col-lg-3 col-sm-6">
         <label for="password">Mot de passe</label>
         <input
@@ -29,10 +31,12 @@
           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
           v-model="password"
         />
-        <small id="noAccess" class="text-danger"></small>
       </div>
       <button type="submit" class="btn btn-primary">Connexion</button>
-      <p>Vous n'avez pas encore de compte ? Cliquer <a href="/signup">ici</a> pour vous inscrire</p>
+      <p>
+        Vous n'avez pas encore de compte ? Cliquer
+        <a href="/signup">ici</a> pour vous inscrire
+      </p>
     </form>
   </div>
 </template>
@@ -46,67 +50,57 @@ export default {
   data() {
     return {
       login: "",
-      password: ""
+      password: "",
     };
   },
   methods: {
-    envoi: function() {
-      //envoie des informations de connexion à l'API pour authentification
+    envoi: function () {
+      //envoi des informations de connexion à l'API pour authentification
       let token = "";
       if (this.login == "" || this.password == "") {
         this.$alert("Veuillez entrer votre login et votre mot de passe");
       } else {
-        axios.post(
-          "http://localhost:5010/api/user/login",
+        axios
+          .post(
+            "http://localhost:5010/api/user/login",
             {
               login: this.login,
-              password: this.password
+              password: this.password,
             },
             {
               headers: {
                 "Content-type": "application/json",
-                Authorization: `Bearer${token}` //Renvoi du token par l'api en cas d'authentification
-              }
+                Authorization: `Bearer${token}`, // envoi du token par l'api
+              },
             }
           )
-          .then(response => {
-            //Si authentification réussie, redirection vers la page des posts
-            /*let reponse = response.data;
-            this.$alert("Bienvenue !");
-            let userObject = JSON.stringify(reponse);
-            this.$localStorage.set("user", userObject);
-            let user = JSON.parse(this.$localStorage.get("user"));
-            token = user.token;
-            window.location.href = "http://localhost:8080/posts";
-            location.reload(true);*/
+          .then((response) => {
+            //Si authentification réussie
             let reponse = response.data;
-            console.log(response.data);
-            this.$alert("Bienvenue "+response.data.userLogin+" !");
-let userObject = JSON.stringify(reponse);
+            // message personnalisé de bienvenue
+            this.$alert("Bienvenue " + response.data.userLogin + " !");
+            let userObject = JSON.stringify(reponse);
             localStorage.setItem("user", userObject);
             let user = JSON.parse(localStorage.getItem("user"));
             //Token d'authentification
-            token = user.token; 
+            token = user.token;
             localStorage.setItem("user_token", token);
             //Redirection vers les posts
-            //window.location.href = "http://localhost:8080/posts";
-            router.push('posts');
-
+            router.push("posts");
           })
           //Si échec authentification, avertissement de l'utilisateur
           .catch(() => {
             this.$alert("Echec de la connexion");
-            document.querySelector("#noAccess").innerHTML = "Login ou mot de passe incorrect";
+            document.querySelector("#noAccess").innerHTML =
+              "Login ou mot de passe incorrect";
           });
       }
-    }
-  }
+    },
+  },
 };
-
 </script>
 
 <style  scoped>
-
 h1 {
   position: relative;
   display: inline;
@@ -122,11 +116,9 @@ h1 {
 
 #container {
   height: 100%;
-  /*margin-bottom: 20px;
-  padding-bottom: 10px;*/
-  background-image:url(../assets/icon.svg);
-background-repeat:no-repeat;
-background-position:center top;
+  background-image: url(../assets/icon.svg);
+  background-repeat: no-repeat;
+  background-position: center top;
 }
 .form-group {
   position: relative;
@@ -144,5 +136,4 @@ p {
   position: relative;
   bottom: 60px;
 }
-
 </style>

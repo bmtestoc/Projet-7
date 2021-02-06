@@ -1,20 +1,17 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-//import Vue from 'vue'
 import App from './App'
 import router from './router'
 
 Vue.config.productionTip = false
 
 import Vue from 'vue'
+
+// Bootstrap
 import { BootstrapVue } from 'bootstrap-vue'
-// Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-// Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)
-// Optionally install the BootstrapVue icon components plugin
-//Vue.use(IconsPlugin)
+
+// Plugin de création des alertes
 import VueSimpleAlert from "vue-simple-alert";
 Vue.use(VueSimpleAlert);
 
@@ -22,11 +19,10 @@ Vue.use(VueSimpleAlert);
 import InfiniteLoading from 'vue-infinite-loading';
 Vue.use(InfiniteLoading,{
   slots: {
-    noMore: 'Fin des posts', // you can pass a string value
+    noMore: 'Fin des posts',
   },
 });
 
-// eslint-disable no-new
 new Vue({
   el: '#app',
   router,
@@ -34,7 +30,7 @@ new Vue({
   template: '<App/>'
 })
 
-// Pour la gestion du format des dates heures
+// Plugin de formatage des dates heures
 import moment from 'moment';
 Vue.filter('formatDate', function(value) {
   if (value) {

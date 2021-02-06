@@ -3,25 +3,41 @@
     <a href="www.groupomania.com"
       ><img src="../assets/icon-left-font2.png" alt="Groupomania"
     /></a>
+    <!-- affichage de tous les posts -->
     <ul v-for="post in posts">
+      <!-- affichage animation cloche si le post a moins de 48h -->
       <span v-if="post.nb_hours_post < 48"
         ><i class="far fa-bell" title="Nouveau !"></i
       ></span>
+      <!-- affichage des infos du post -->
       <div id="infos">
         <i class="far fa-envelope"></i> Posté par {{ post.user_login }} le
         {{ post.post_createdAt | formatDate }}
       </div>
-      <div id="title" @click="goToPost(post.post_id)">{{ post.post_title }}</div>
-      <div id="content" @click="goToPost(post.post_id)">{{ post.post_content }}</div>
+      <div id="title" @click="goToPost(post.post_id)">
+        {{ post.post_title }}
+      </div>
+      <div id="content" @click="goToPost(post.post_id)">
+        {{ post.post_content }}
+      </div>
+      <!-- affichage nombre total de commentaires -->
       <div id="comments">
         <i class="far fa-comments"></i> {{ post.nb_comments }} commentaire(s)
       </div>
-      <div id="newComments" v-if="post.nb_comments_unread > 0 && post.last_read !== NULL">
+      <!-- affichage nombre nouveaux commentaires -->
+      <div
+        id="newComments"
+        v-if="post.nb_comments_unread > 0 && post.last_read !== NULL"
+      >
         <span class="light">
           {{ post.nb_comments_unread }} nouveau(x) commentaire(s)</span
         >
       </div>
-      <div v-if="user.profile == 1 || user.userId == post.post_user_id" id="deleteButton">
+      <!-- affichage bouton supprimer si le user est l'auteur du post ou s'il est admin -->
+      <div
+        v-if="user.profile == 1 || user.userId == post.post_user_id"
+        id="deleteButton"
+      >
         <b-button
           class="btn btn-sm"
           v-b-modal.modal-delete-post
@@ -46,10 +62,9 @@
             >Annuler</b-button
           >
         </b-modal>
-
-        <!--<button type="button" class="btn btn-outline-secondary btn-sm"><i class="far fa-trash-alt"></i> Supprimer</button>-->
       </div>
     </ul>
+    <!-- scroll infini -->
     <infinite-loading @infinite="infiniteHandler"></infinite-loading>
   </div>
 </template>
@@ -66,29 +81,22 @@ export default {
       page: 1,
     };
   },
-  async created() {
-    /*this.posts = (
-      await axios.get("http://localhost:5010/api/post", {
-        headers: {
-          Authorization: `token ${localStorage.getItem("user_token")}`,
-        },
-      })
-    ).data.hits;*/
-  },
+  async created() {},
   computed: {
     user() {
-      return JSON.parse(localStorage.getItem("user"))
-    }
+      return JSON.parse(localStorage.getItem("user"));
+    },
   },
   methods: {
     goToPost: function (postId) {
+      // pour consulter un post et ses commentaires
       router.push("/post/" + postId);
     },
     modalId: function (id) {
-      // `this` points to the vm instance
       return "modal-delete-post-" + id;
     },
     deletePost: function (postId) {
+      // pour supprimer un post
       axios
         .delete("http://localhost:5010/api/post/" + postId, {
           headers: {
@@ -100,10 +108,10 @@ export default {
           window.location.reload(false);
         })
         .catch((errors) => {
-          console.log(errors);
           this.$alert("Post inexistant");
         });
     },
+    // scroll infini
     infiniteHandler($state) {
       axios
         .get("http://localhost:5010/api/post/", {
@@ -112,7 +120,7 @@ export default {
           },
           headers: {
             Authorization: `token ${localStorage.getItem("user_token")}`,
-          }
+          },
         })
         .then(({ data }) => {
           if (data.hits.length) {
@@ -179,6 +187,7 @@ img {
   animation: shake 0.5s;
   animation-iteration-count: infinite;
 }
+/* animation cloche */
 @keyframes shake {
   0% {
     transform: translate(1px, 1px) rotate(0deg);
@@ -220,6 +229,7 @@ img {
 #newComments span {
   display: block;
 }
+/* animation nouveau message */
 #newComments span:not(.light) {
   opacity: 0;
   animation: flashText 0.5s ease-out alternate infinite;

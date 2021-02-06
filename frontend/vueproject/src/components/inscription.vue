@@ -3,7 +3,9 @@
     <div id="nav">
       <h1>Inscription</h1>
     </div>
+    <!-- formulaire -->
     <form method="POST" id="formulaire" @submit.prevent="envoi">
+      <!-- champ email avec vérifications -->
       <div class="form-group col-lg-3 col-sm-6">
         <label for="email">Email</label>
         <input
@@ -16,8 +18,8 @@
           pattern="[a-zâäàéèùêëîïôöçñA-Z0-9.-_]+[@]{1}[a-zA_Z0-9.-_]+[.]{1}[a-z]{2,4}"
           v-model="email"
         />
-        <small id="emailHelp" class="form-text text-muted"></small>
       </div>
+      <!-- champ login -->
       <div class="form-group col-lg-3 col-sm-6">
         <label for="login">Login</label>
         <input
@@ -29,13 +31,14 @@
           id="login"
           v-model="login"
         />
-        <small id="login" class="form-text text-muted"></small>
       </div>
+      <!-- affichage consignes pour mot de passe au passage de la souris -->
       <div
         class="form-group col-lg-3 col-sm-6"
         v-b-tooltip.hover
         title="Votre mot de passe doit contenir: au moins 6 caractères, au moins une lettre en minuscule, au moins une lettre en majuscule, au moins un nombre."
       >
+        <!-- premier champ mot de passe avec vérifications -->
         <label for="password">Mot de passe</label>
         <input
           type="password"
@@ -51,6 +54,7 @@
         />
       </div>
       <div class="form-group col-lg-3 col-sm-6">
+        <!-- deuxieme champ mot de passe pour vérifier qu'il est identique à celui saisi précédemment -->
         <label for="password2"> Confirmez votre mot de passe</label>
         <input
           type="password"
@@ -63,7 +67,6 @@
           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
           v-model="password2"
         />
-        <small id="confirm" class="text-danger"></small>
       </div>
       <button type="submit" class="btn btn-primary">S'inscrire</button>
       <p>Déjà inscrit ? <a href="/signin">Veuillez vous connecter</a></p>
@@ -93,7 +96,8 @@ export default {
       } else if (this.password != this.password2) {
         this.$alert("Les mots de passe saisis sont différents !");
       } else {
-        axios.post(
+        axios
+          .post(
             "http://localhost:5010/api/user/signup",
             {
               email: this.email,
@@ -110,32 +114,27 @@ export default {
           .then((response) => {
             this.$alert("Inscription réussie !");
             let reponse = response.data;
-            console.log(response);
-            //let userObject = JSON.stringify(reponse);
-            //localStorage.setItem("user", userObject);
-            //let user = JSON.parse(localStorage.getItem("user"));
-            //Token d'authentification
-            //token = user.token; 
-            //Redirection vers la page de connexion
-            this.$alert("Merci pour votre inscription, vous pouvez maintenant vous connecter");
+            // message et redirection vers la page de connexion
+            this.$alert(
+              "Merci pour votre inscription, vous pouvez maintenant vous connecter"
+            );
             window.location.href = "http://localhost:8080/signin";
           })
-          //.catch((err) => this.$alert(err.message));
-          .catch(() => this.$alert("Ce login existe déjà, veuillez en choisir un autre"));
+          .catch(() =>
+            this.$alert("Ce login existe déjà, veuillez en choisir un autre")
+          );
       }
     },
-
     showdiv: function () {
       //Affichage des consignes pour choisir le mot de passe
       document.getElementById("showfocus").style.display = "block";
     },
-
     maskdiv: function () {
       //Masquage des consignes pour choisir le mot de passe
       document.getElementById("showfocus").style.display = "none";
     },
     verif: function () {
-      //Fonction pour vérifier que les passwords saisis sont identiques
+      //Fonction pour vérifier que les mots de passe saisis sont identiques
       if (this.password != this.password2) {
         document.getElementById("confirm").innerHTML =
           "Veuillez resaisir votre mot de passe";
