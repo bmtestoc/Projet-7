@@ -11,20 +11,19 @@ const Op = db.Sequelize.Op;
 // Inscription d'un user
 exports.signup = (req, res, next) => {
   if (userValidator.isGoodPassword(req.body.password)) {
-      User.create({
-        login: req.body.login,
-        email: req.body.email,
-        password: req.body.password,
-        picture: req.body.picture,
-        profile: 0,
-        is_active: 1
-      })
-          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-          //.catch(error => res.status(400).json({ message: 'Utilisateur déjà existant !' }));
-          .catch(error => res.status(400).json({ 
-            message: 'Utilisateur déjà existant !',
-            erreur: error
-          }));
+    User.create({
+      login: req.body.login,
+      email: req.body.email,
+      password: req.body.password,
+      picture: req.body.picture,
+      profile: 0,
+      is_active: 1
+    })
+      .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+      .catch(error => res.status(400).json({
+        message: 'Utilisateur déjà existant !',
+        erreur: error
+      }));
   }
   else {
     return res.status(404).json({ message: 'Le mot de passe doit contenir au moins un nombre, une minuscule, une majuscule et être composé de 6 caractères minimum' });
@@ -34,14 +33,11 @@ exports.signup = (req, res, next) => {
 // Connexion d'un user
 exports.login = (req, res, next) => {
   User.findOne({ where: { login: req.body.login } })
-    .then(user => { console.log(user);
+    .then(user => {
       if (!user || user.is_active === 0) {
         return res.status(401).json({ message: 'Utilisateur non trouvé !' });
       }
-
-      console.log(bcrypt.compareSync(req.body.password, user.password));
-
-      bcrypt.compare(req.body.password, user.password)
+            bcrypt.compare(req.body.password, user.password)
         .then(valid => {
           if (!valid) {
             return res.status(404).json({ message: "Mot de passe incorrect !" });
@@ -64,54 +60,43 @@ exports.login = (req, res, next) => {
 
 //Suppression d'un user
 exports.deleteUser = (req, res, next) => {
-  //TODO : on récupère le user connecté
-  //si c'est le même user que userid ou s'il est admin (profile = 1), alors on autorise l'action
   try {
     if (req.headers && req.headers.authorization) {
-        var authorization = req.headers.authorization.split(' ')[1],
-            decoded;
-        try {
-            decoded = jwt.verify(authorization, 'RANDOM_TOKEN_SECRET');
-        } catch (e) {
-            return res.status(401).send('unauthorized');
+      var authorization = req.headers.authorization.split(' ')[1],
+        decoded;
+      try {
+        decoded = jwt.verify(authorization, 'RANDOM_TOKEN_SECRET');
+      } catch (e) {
+        return res.status(401).send('unauthorized');
+      }
+      var connectedUserId = decoded.userId;
+      User.findOne({ where: { id: connectedUserId } }).then(function (connectedUser) {
+        const userId = parseInt(req.params.id);
+        var condition = userId ?
+          { id: { [Op.eq]: userId } } : null;
+
+        if (connectedUserId === userId || connectedUser.profile === 1) {
+          User.destroy({ where: condition })
+            .then(data => {
+              let message = 'Utilisateur supprimé avec succès';
+              let statut = 200;
+              if (data === 0) {
+                message = 'Utilisateur inexistant';
+                statut = 404;
+              }
+              res.status(statut).json({ message: message });
+            })
+            .catch(err => {
+              res.status(500).send({
+                message:
+                  err.message || "Cet ID est inconnu."
+              });
+            });
         }
-        
-        var connectedUserId = decoded.userId;
-        // Fetch the user by id 
-        User.findOne({ where: { id: connectedUserId } }).then(function(connectedUser){
-            // Do something with the user
-            //return res.send(200);
-            //return res.status(200).json(user);
-
-            const userId = parseInt(req.params.id);
-            var condition = userId ?
-              { id: { [Op.eq]: userId } } : null;
-
-            if( connectedUserId ===  userId || connectedUser.profile === 1) {
-
-              User.destroy({ where: condition })
-                .then(data => {
-                  let message = 'Utilisateur supprimé avec succès';
-                  let statut = 200;
-                  if(data === 0) {
-                    message = 'Utilisateur inexistant';
-                    //on renvoie le statut 404 not found si utilisateur inexistant
-                    statut = 404;
-                  }
-                  res.status(statut).json({message: message});
-                })
-                .catch(err => {
-                  res.status(500).send({
-                    message:
-                      err.message || "Cet ID est inconnu."
-                  });
-                });
-            }
-            else {
-              res.status(401).json({message: "Action non autorisée"});
-            }
-
-        })
+        else {
+          res.status(401).json({ message: "Action non autorisée" });
+        }
+      })
         .catch(err => {
           res.status(500).json({
             message:
@@ -121,42 +106,35 @@ exports.deleteUser = (req, res, next) => {
         ;
     }
   }
-  catch(err) {
-    console.log(err);
-    return res.status(500).send({message: err.message});
+  catch (err) {
+    return res.status(500).send({ message: err.message });
   }
 };
 
-exports.getUserDataFromToken = function(req,res){
+exports.getUserDataFromToken = function (req, res) {
   try {
     if (req.headers && req.headers.authorization) {
-        var authorization = req.headers.authorization.split(' ')[1],
-            decoded;
-        try {
-            decoded = jwt.verify(authorization, 'RANDOM_TOKEN_SECRET');
-        } catch (e) {
-            return res.status(401).send('unauthorized');
-        }
-        
-        var userId = decoded.userId;
-        // Fetch the user by id 
-        User.findOne({ where: { id: userId } }).then(function(user){
-            // Do something with the user
-            //return res.send(200);
-            return res.status(200).json(user);
-        })
+      var authorization = req.headers.authorization.split(' ')[1],
+        decoded;
+      try {
+        decoded = jwt.verify(authorization, 'RANDOM_TOKEN_SECRET');
+      } catch (e) {
+        return res.status(401).send('unauthorized');
+      }
+      var userId = decoded.userId;
+      User.findOne({ where: { id: userId } }).then(function (user) {
+        return res.status(200).json(user);
+      })
         .catch(err => {
           res.status(500).json({
             message:
               err.message
           })
-        })
-        ;
+        });
     }
   }
-  catch(err) {
-    console.log(err);
-    return res.status(500).send({message: err.message});
+  catch (err) {
+    return res.status(500).send({ message: err.message });
   }
 }
 
@@ -201,7 +179,6 @@ exports.updateUser = (req, res, next) => {
   if (req.body.email) {
     userUpdate['email'] = req.body.email;
   }
-  //!== undefined car is_active peut être égale à 0
   if (typeof req.body.is_active !== 'undefined') {
     userUpdate['is_active'] = req.body.is_active;
   }

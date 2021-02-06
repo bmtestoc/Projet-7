@@ -10,14 +10,14 @@ const Op = db.Sequelize.Op;
 
 // Création d'un commentaire
 exports.createComment = (req, res, next) => {
-    
-        postComment.create({
-            user_id: req.body.user_id,
-            content: req.body.content,
-            post_id: req.body.post_id,
-        })
-            .then(() => res.status(201).json({ message: 'Commentaire créé !' }))
-            
+
+    postComment.create({
+        user_id: req.body.user_id,
+        content: req.body.content,
+        post_id: req.body.post_id,
+    })
+        .then(() => res.status(201).json({ message: 'Commentaire créé !' }))
+
 };
 
 //Suppression d'un commentaire
@@ -46,7 +46,7 @@ exports.deleteComment = (req, res, next) => {
 //Affichage de tous les commentaires
 exports.getAllComments = (req, res, next) => {
     const search = req.query.search;
-    
+
     var condition = search ?
         {
             [Op.or]: [
@@ -54,31 +54,15 @@ exports.getAllComments = (req, res, next) => {
                 { email: { [Op.like]: `%${search}%` } }
             ]
         } : null;
-        
-        /*postComment.findAll({ where: condition,
-            order: [['createdAt', 'DESC']],
-            offset: offset,
-            limit: 100
-        })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Pas de résultat pour cette recherche."
-            });
-        })*/
-        (async () => {
-            const postId = req.query.post_id;
-            comments = await db.sequelize.query("SELECT user.login, post_comment.* FROM `post_comment` INNER JOIN user ON user.id = post_comment.user_id WHERE `post_id` = :id ORDER BY `createdAt` DESC", {
-                replacements: { id: postId },
-                type: db.sequelize.QueryTypes.SELECT
-            });
-            return res.status(200).json(comments);
-        })();
-    };
-
+    (async () => {
+        const postId = req.query.post_id;
+        comments = await db.sequelize.query("SELECT user.login, post_comment.* FROM `post_comment` INNER JOIN user ON user.id = post_comment.user_id WHERE `post_id` = :id ORDER BY `createdAt` DESC", {
+            replacements: { id: postId },
+            type: db.sequelize.QueryTypes.SELECT
+        });
+        return res.status(200).json(comments);
+    })();
+};
 
 //Modification d'un commentaire
 exports.updateComment = (req, res, next) => {
@@ -110,12 +94,12 @@ exports.getOneComment = (req, res, next) => {
     const postCommentId = req.params.id;
     var condition = postCommentId ?
         { id: { [Op.eq]: postCommentId } } : null;
-        postComment.findOne({ 
-            where: condition,
-            include: [
-                { model: User, where: { id: req.params.userId } }
-            ]
-        })
+    postComment.findOne({
+        where: condition,
+        include: [
+            { model: User, where: { id: req.params.userId } }
+        ]
+    })
         .then(data => {
             res.send(data);
         })
@@ -125,5 +109,5 @@ exports.getOneComment = (req, res, next) => {
                     err.message || "Cet ID est inconnu."
             });
         });
-    };
+};
 

@@ -2,7 +2,6 @@ const Sequelize = require("sequelize");
 const sequelize = require("./db.js");
 const bcrypt = require('bcrypt');
 
-
 // Définition du modèle
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("user", {
@@ -13,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true
         },
         login: {
-            type: Sequelize.STRING(50),        
+            type: Sequelize.STRING(50),
             allowNull: false
         },
         password: {
@@ -22,7 +21,7 @@ module.exports = (sequelize, Sequelize) => {
             set(value) {
                 const hash = bcrypt.hashSync(value, bcrypt.genSaltSync(10));
                 this.setDataValue('password', hash);
-              },
+            },
         },
         last_connection: {
             type: Sequelize.DATE,
@@ -38,7 +37,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         email: {
-            type: Sequelize.STRING(50),        
+            type: Sequelize.STRING(50),
             allowNull: false
         },
         is_active: {
@@ -46,9 +45,8 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         }
     },
-    {
-        tableName: 'user'
-    });
-  
+        {
+            tableName: 'user'
+        });
     return User;
-  };
+};

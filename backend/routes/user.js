@@ -3,10 +3,11 @@ const router = express.Router();
 const userCtrl = require('../controllers/user');
 const rateLimit = require("express-rate-limit");
 
+// Limite le nombre d'appels à l'api
 const apiLimiter = rateLimit({
-    windowMs: 2 * 60 * 1000,
-    max: 2
-  });
+  windowMs: 2 * 60 * 1000,
+  max: 2
+});
 
 // Import du middleware auth pour la sécurisation des routes 
 const auth = require('../middleware/auth');

@@ -16,7 +16,7 @@ exports.createPost = (req, res, next) => {
         content: req.body.content,
         title: req.body.title,
     })
-        .then(() => res.status(201).json({ message: 'Sujet créé !' }))
+        .then((postCreated) => res.status(201).json({ message: 'Sujet créé !', post: postCreated }))
 };
 
 //Suppression d'un post
@@ -30,7 +30,6 @@ exports.deletePost = (req, res, next) => {
             let statut = 200;
             if (data === 0) {
                 message = 'Post inexistant';
-                //on renvoie le statut 404 not found si utilisateur inexistant
                 statut = 404;
             }
             res.status(statut).json({ message: message });
@@ -42,38 +41,7 @@ exports.deletePost = (req, res, next) => {
             });
         });
 };
-/*
-//Affichage de tous les posts
-exports.getAllPosts = (req, res, next) => {
-    const search = req.query.search;
-    
-    let offset = 0;
-    if(req.query.offset) {
-        offset = parseInt(req.query.offset);
-    }
-    var condition = search ?
-        {
-            [Op.or]: [
-                { login: { [Op.like]: `%${search}%` } },
-                { email: { [Op.like]: `%${search}%` } }
-            ]
-        } : null;
-    Post.findAll({ where: condition,
-    order: [['createdAt', 'DESC']],
-    offset: offset,
-    limit: 100
-    })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Pas de post."
-            });
-        });
-};
-*/
+
 //Modification d'un post
 exports.updatePost = (req, res, next) => {
     const postId = parseInt(req.params.id)
@@ -104,30 +72,17 @@ exports.updatePost = (req, res, next) => {
 
 //Affichage d'un post
 exports.getOnePost = (req, res, next) => {
-    
-    /*var condition = postId ?
-        { id: { [Op.eq]: postId } } : null;*/
-        (async () => {
-            const postId = req.params.id;
-            onePost = await db.sequelize.query("SELECT post.*, user.login FROM `post` INNER JOIN `user` ON post.user_id = user.id WHERE post.id=:id", {
-                replacements: { id: postId },
-                type: db.sequelize.QueryTypes.SELECT
-            });
-            if(onePost.length === 1) {
-                onePost = onePost[0];
-            }
-            return res.status(200).json(onePost);
-        })();
-    /*Post.findOne({ where: condition })
-        .then(data => {
-            res.status(200).send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Cet ID est inconnu."
-            });
-        });*/
+    (async () => {
+        const postId = req.params.id;
+        onePost = await db.sequelize.query("SELECT post.*, user.login FROM `post` INNER JOIN `user` ON post.user_id = user.id WHERE post.id=:id", {
+            replacements: { id: postId },
+            type: db.sequelize.QueryTypes.SELECT
+        });
+        if (onePost.length === 1) {
+            onePost = onePost[0];
+        }
+        return res.status(200).json(onePost);
+    })();
 };
 
 //Affichage de tous les posts
@@ -137,7 +92,6 @@ exports.getAllPosts = (req, res, next) => {
     if (req.query.offset) {
         offset = parseInt(req.query.offset);
     }
-
     try {
         if (req.headers && req.headers.authorization) {
             var authorization = req.headers.authorization.split(' ')[1],
@@ -147,33 +101,20 @@ exports.getAllPosts = (req, res, next) => {
             } catch (e) {
                 return res.status(401).send('unauthorized');
             }
-
             var connectedUserId = decoded.userId;
-
         }
     } catch (error) {
-
     }
-
     (async () => {
-        /*postLogin = await db.sequelize.query("SELECT (time_to_sec(timediff(NOW(), post.createdAt)) / 3600) AS nb_hours_post, post.id AS post_id, post.user_id AS post_user_id, post.createdAt AS post_createdAt, post.content AS post_content, post.title AS post_title, post.updatedAt AS post_updatedAt, user.login AS user_login, user.last_connection AS user_last_connexion, user.picture AS user_picture, user.profile AS user_profile, user.email AS user_email, user.is_active AS user_is_active, user.createdAt AS user_createdAt, user.updatedAt AS user_updatedAt, COUNT(post_comment.id) AS nb_comments, SUM(CASE WHEN post_comment.createdAt > post_read.last_read THEN 1 ELSE 0 END) AS nb_comments_unread, post_read.last_read FROM post LEFT JOIN user ON post.user_id = user.id LEFT JOIN post_comment ON post_comment.post_id = post.id LEFT JOIN post_read ON post_read.post_id = post.id AND post_read.user_id = :id GROUP BY post.id ORDER BY nb_comments_unread DESC, post.`createdAt` DESC LIMIT 0, 100", {
-            replacements: { id: connectedUserId },
-            type: db.sequelize.QueryTypes.SELECT
-        });
-        return res.status(200).json(postLogin);*/
         const page = parseInt(req.query.page);
         const hitsPerPage = 10;
-        const offset = (page-1) * hitsPerPage;
-        
+        const offset = (page - 1) * hitsPerPage;
         const nbHits = await Post.count();
-        
-        const nbPages = nbHits/hitsPerPage;
-
+        const nbPages = nbHits / hitsPerPage;
         const postLogin = await db.sequelize.query("SELECT (time_to_sec(timediff(NOW(), post.createdAt)) / 3600) AS nb_hours_post, post.id AS post_id, post.user_id AS post_user_id, post.createdAt AS post_createdAt, post.content AS post_content, post.title AS post_title, post.updatedAt AS post_updatedAt, user.login AS user_login, user.last_connection AS user_last_connexion, user.picture AS user_picture, user.profile AS user_profile, user.email AS user_email, user.is_active AS user_is_active, user.createdAt AS user_createdAt, user.updatedAt AS user_updatedAt, COUNT(post_comment.id) AS nb_comments, SUM(CASE WHEN post_comment.createdAt > post_read.last_read THEN 1 ELSE 0 END) AS nb_comments_unread, post_read.last_read FROM post LEFT JOIN user ON post.user_id = user.id LEFT JOIN post_comment ON post_comment.post_id = post.id LEFT JOIN post_read ON post_read.post_id = post.id AND post_read.user_id = :id GROUP BY post.id ORDER BY nb_comments_unread DESC, post.`createdAt` DESC LIMIT :offset, :hitsPerPage", {
             replacements: { id: connectedUserId, offset: offset, hitsPerPage: hitsPerPage },
             type: db.sequelize.QueryTypes.SELECT
         });
-
         const formattedObject = {
             hits: postLogin,
             nbHits: nbHits,
@@ -181,25 +122,6 @@ exports.getAllPosts = (req, res, next) => {
             nbPages: nbPages,
             hitsPerPage: hitsPerPage
         }
-        
         return res.status(200).json(formattedObject);
     })();
 };
-/*
-//Compteur de commentaires
-exports.getCounterComment = (req, res, next) => {
-    const search = req.query.search;
-    let offset = 0;
-    if(req.query.offset) {
-        offset = parseInt(req.query.offset);
-    }
-    (async() => {
-        counterComment = await db.sequelize.query("SELECT COUNT(post_comment.id) AS nb_comment, post_id FROM post_comment INNER JOIN post ON post_comment.post_id = post.id GROUP BY post_id", {
-        //replacements: {id: req.user.id},
-        type: db.sequelize.QueryTypes.SELECT
-      });
-      console.log(counterComment);
-      return res.status(200).json(counterComment);
-    })();
-};
-*/

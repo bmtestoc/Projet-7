@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const dbConfig = require("../config/db.config.js");
 const user = require("./user.js");
 
-/* Initialise Sequelize */
+// Initialise Sequelize
 const config = {
     username: dbConfig.USER,
     password: dbConfig.PASSWORD,
@@ -10,11 +10,11 @@ const config = {
     host: dbConfig.HOST,
     dialect: "mysql",
     dialectOptions: {
-        useUTC: false, // for reading from database
+        useUTC: false,
         dateStrings: true,
         typeCast: true
     },
-    timezone: '+01:00', // for writing to database
+    timezone: '+01:00',
 }
 
 const sequelize = new Sequelize(config);

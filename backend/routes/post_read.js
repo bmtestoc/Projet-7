@@ -9,10 +9,10 @@ const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
 
 // Routes de l'API
-router.get('/', /*auth, */postReadCtrl.getAllPostRead);
-router.get('/:userid/:postid', /*auth, */postReadCtrl.getOnePostRead);
-router.post('/', /*auth, */multer, postReadCtrl.createPostRead);
-router.put('/:id', /*auth, */multer, postReadCtrl.updatePostRead);
-router.delete('/:id', /*auth, */postReadCtrl.deletePostRead);
+router.get('/', auth, postReadCtrl.getAllPostRead);
+router.get('/:userid/:postid', auth, postReadCtrl.getOnePostRead);
+router.post('/', auth, multer, postReadCtrl.createPostRead);
+router.put('/:id', auth, multer, postReadCtrl.updatePostRead);
+router.delete('/:id', auth, postReadCtrl.deletePostRead);
 
 module.exports = router;

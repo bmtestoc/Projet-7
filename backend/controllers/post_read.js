@@ -17,7 +17,6 @@ exports.createPostRead = (req, res, next) => {
         post_id: req.body.post_id,
     })
         .then(() => res.status(201).json({ message: 'Affiché comme lu' }))
-
 };
 
 //Modification d'une lecture de commentaire
@@ -51,45 +50,18 @@ exports.getOnePostRead = (req, res, next) => {
     const PostReadPostId = req.params.postid;
     const conditions = {
         user_id: { [Op.eq]: PostReadUserId },
-        post_id: { [Op.eq]: PostReadPostId } 
+        post_id: { [Op.eq]: PostReadPostId }
     }
     postRead.findOne({ where: conditions })
-    .then(data => {
-        return res.status(200).json(data);
-    })
-    .catch(err => {
-        res.status(500).send({
-            message:
-                err.message
-        });
-    });
-
-    
-    
-    /*if ((PostReadUserId = post_read.user_id) && (PostReadPostId = post_read.post_id)) {
-        postRead.update(
-            postReadUpdate,
-            {
-                where: ['last_read']
-            })
-    } else {
-        postRead.create({
-            user_id: PostReadUserId,
-            post_id: PostReadPostId,
-        })
-    }*/
-    /*var condition = PostReadId ?
-        { id: { [Op.eq]: PostReadId } } : null;
-        postRead.findOne({ where: condition })
         .then(data => {
-            res.send(data);
+            return res.status(200).json(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Cet ID est inconnu."
+                    err.message
             });
-        });*/
+        });
 };
 
 //Suppression d'une lecture de commentaire

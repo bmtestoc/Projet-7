@@ -1,3 +1,4 @@
+// config de la bdd
 module.exports = {
   HOST: "localhost",
   USER: "root",
