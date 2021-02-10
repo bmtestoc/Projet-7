@@ -102,7 +102,7 @@ a:hover {
 }
 
 .support {
-  background-color: #6dcd9a;
+  background-color: #1b245b;
   font-size: 0.8em;
   width: 40%;
 }

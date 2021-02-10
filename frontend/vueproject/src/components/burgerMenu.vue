@@ -1,6 +1,6 @@
 <template>
-  <Slide right width="350">
-    <a id="posts" href="/posts">
+  <Slide right>
+    <a id="menuPosts" href="/posts">
       <span><i class="far fa-comments"></i> Forum</span>
     </a>
     <a id="addPost" href="/add">

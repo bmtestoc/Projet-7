@@ -1,69 +1,72 @@
 <template>
   <div id="container">
-    <a href="www.groupomania.com"
+    <a href="http://www.groupomania.com"
       ><img src="../assets/icon-left-font2.png" alt="Groupomania"
     /></a>
+    <heading><h1>Forum</h1></heading>
     <!-- affichage de tous les posts -->
-    <ul v-for="post in posts">
-      <!-- affichage animation cloche si le post a moins de 48h -->
-      <span v-if="post.nb_hours_post < 48"
-        ><i class="far fa-bell" title="Nouveau !"></i
-      ></span>
-      <!-- affichage des infos du post -->
-      <div id="infos">
-        <i class="far fa-envelope"></i> Posté par {{ post.user_login }} le
-        {{ post.post_createdAt | formatDate }}
-      </div>
-      <div id="title" @click="goToPost(post.post_id)">
-        {{ post.post_title }}
-      </div>
-      <div id="content" @click="goToPost(post.post_id)">
-        {{ post.post_content }}
-      </div>
-      <!-- affichage nombre total de commentaires -->
-      <div id="comments">
-        <i class="far fa-comments"></i> {{ post.nb_comments }} commentaire(s)
-      </div>
-      <!-- affichage nombre nouveaux commentaires -->
-      <div
-        id="newComments"
-        v-if="post.nb_comments_unread > 0 && post.last_read !== NULL"
-      >
-        <span class="light">
-          {{ post.nb_comments_unread }} nouveau(x) commentaire(s)</span
+    <div id="posts">
+      <div class="div-posts" v-for="post in posts">
+        <!-- affichage animation cloche si le post a moins de 48h -->
+        <span v-if="post.nb_hours_post < 48"
+          ><i class="far fa-bell" title="Nouveau !"></i
+        ></span>
+        <!-- affichage des infos du post -->
+        <div class="infos">
+          <i class="far fa-envelope"></i> Posté par {{ post.user_login }} le
+          {{ post.post_createdAt | formatDate }}
+        </div>
+        <div class="title" @click="goToPost(post.post_id)">
+          {{ post.post_title }}
+        </div>
+        <div class="content" @click="goToPost(post.post_id)">
+          {{ post.post_content }}
+        </div>
+        <!-- affichage nombre total de commentaires -->
+        <div class="comments">
+          <i class="far fa-comments"></i> {{ post.nb_comments }} commentaire(s)
+        </div>
+        <!-- affichage nombre nouveaux commentaires -->
+        <div
+          class="newComments"
+          v-if="post.nb_comments_unread > 0 && post.last_read !== NULL"
         >
-      </div>
-      <!-- affichage bouton supprimer si le user est l'auteur du post ou s'il est admin -->
-      <div
-        v-if="user.profile == 1 || user.userId == post.post_user_id"
-        id="deleteButton"
-      >
-        <b-button
-          class="btn btn-sm"
-          v-b-modal.modal-delete-post
-          @click="$bvModal.show(modalId(post.post_id))"
-          ><i class="far fa-trash-alt"></i> Supprimer</b-button
-        >
-        <b-modal
-          v-bind:id="modalId(post.post_id)"
-          title="Supprimer ce post"
-          hide-footer
-        >
-          <div class="d-block text-center">
-            <h3>Souhaitez-vous vraiment supprimer ce post?</h3>
-          </div>
-          <b-button class="mt-3" block @click="deletePost(post.post_id)"
-            >Valider</b-button
+          <span class="light">
+            {{ post.nb_comments_unread }} nouveau(x) commentaire(s)</span
           >
+        </div>
+        <!-- affichage bouton supprimer si le user est l'auteur du post ou s'il est admin -->
+        <div
+          v-if="user.profile == 1 || user.userId == post.post_user_id"
+          class="deleteButton"
+        >
           <b-button
-            class="mt-3"
-            block
-            @click="$bvModal.hide(modalId(post.post_id))"
-            >Annuler</b-button
+            class="btn btn-sm"
+            v-b-modal.modal-delete-post
+            @click="$bvModal.show(modalId(post.post_id))"
+            ><i class="far fa-trash-alt"></i> Supprimer</b-button
           >
-        </b-modal>
+          <b-modal
+            v-bind:id="modalId(post.post_id)"
+            title="Supprimer ce post"
+            hide-footer
+          >
+            <div class="d-block text-center">
+              <h3>Souhaitez-vous vraiment supprimer ce post?</h3>
+            </div>
+            <b-button class="mt-3" block @click="deletePost(post.post_id)"
+              >Valider</b-button
+            >
+            <b-button
+              class="mt-3"
+              block
+              @click="$bvModal.hide(modalId(post.post_id))"
+              >Annuler</b-button
+            >
+          </b-modal>
+        </div>
       </div>
-    </ul>
+    </div>
     <!-- scroll infini -->
     <infinite-loading @infinite="infiniteHandler"></infinite-loading>
   </div>
@@ -137,7 +140,7 @@ export default {
 </script>
 
 <style scoped>
-ul {
+.div-posts {
   border: 1px solid #888888;
   border-radius: 10px;
   width: 80%;
@@ -146,28 +149,29 @@ ul {
   background-color: white;
   box-shadow: 5px 5px #888888;
   padding: 10px;
+  margin-bottom: 20px;
 }
-#content {
+.content {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   text-align: center;
 }
-#infos {
+.infos {
   text-align: left;
   font-size: small;
   color: grey;
 }
-#comments {
+.comments {
   text-align: left;
   color: grey;
   margin-top: 10px;
 }
-#title {
+.title {
   font-weight: bold;
   text-align: center;
 }
-#deleteButton {
+.deleteButton {
   text-align: right;
   padding-right: 5px;
   padding-bottom: 5px;

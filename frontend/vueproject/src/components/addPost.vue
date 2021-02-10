@@ -8,26 +8,29 @@
         ></i
       ></a>
     </div>
+    <heading><h1>Créer un sujet</h1></heading>
     <!-- formulaire d'envoi -->
     <form method="POST" @submit.prevent="submitAddPost">
-      <!-- champ titre -->
       <div class="form-group">
+        <!-- champ titre -->
+        <label for="title">Titre</label>
         <input
           type="text"
           v-model="title"
           class="form-control"
           id="title"
           name="title"
-          placeholder="Titre"
+          placeholder="Votre titre"
           maxlength="80"
         />
         <!-- champ contenu -->
+        <label for="content">Contenu</label>
         <textarea
           v-model="content"
           class="form-control"
           id="content"
           name="content"
-          placeholder="Contenu"
+          placeholder="Votre contenu"
         ></textarea>
       </div>
       <button class="btn btn-primary" type="submit">
@@ -126,12 +129,6 @@ export default {
 }
 .fa-arrow-alt-circle-left {
   color: rgb(194, 60, 60);
-}
-#title {
-  margin-top: 100px;
-}
-#content {
-  margin-top: 20px;
 }
 
 @media (max-height: 850px) and (orientation: portrait) {

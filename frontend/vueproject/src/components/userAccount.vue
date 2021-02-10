@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <heading><h1>Mon compte</h1></heading>
     <!-- pour changer son mot de passe avec rappel des consignes -->
     <div id="changePassword">
       <form method="POST" @submit.prevent="submitNewPassword">
@@ -7,12 +8,13 @@
           v-b-tooltip.hover
           title="Votre mot de passe doit contenir: au moins 6 caractères, au moins une lettre en minuscule, au moins une lettre en majuscule, au moins un nombre."
         >
+          <label for="newPassword">Mot de passe</label>
           <input
             type="password"
             class="form-control"
             id="newPassword"
             name="newPassword"
-            placeholder="Nouveau mot de passe"
+            placeholder="Saisissez votre nouveau mot de passe"
             v-on:focus="showdiv"
             v-on:blur="maskdiv"
             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"

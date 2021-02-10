@@ -1,11 +1,14 @@
 <template>
   <div class="container">
+    <heading><h1>Administration</h1></heading>
     <!-- champ de recherche -->
+    <label for="search">Rechercher</label>
     <input
       type="text"
       class="form-control"
       v-model="keyword"
-      placeholder="Rechercher"
+      placeholder="Votre recherche"
+      id="search"
     />
     <!-- tableau des résultats -->
     <div class="table-responsive">

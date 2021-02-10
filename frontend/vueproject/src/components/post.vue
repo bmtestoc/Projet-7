@@ -1,8 +1,11 @@
 <template>
   <div id="container">
-    <a href="www.groupomania.com"
+    <a href="http://www.groupomania.com"
       ><img src="../assets/icon-left-font2.png" alt="Groupomania"
     /></a>
+    <heading
+      ><h1>{{ post.title }}</h1></heading
+    >
     <div id="return">
       <a href="/posts"
         ><i
@@ -17,7 +20,6 @@
         <i class="far fa-envelope"></i> Posté le
         {{ post.createdAt | formatDate }} par {{ post.login }}
       </div>
-      <div id="title">{{ post.title }}</div>
       <div id="content">{{ post.content }}</div>
     </div>
     <!-- commentaires -->
@@ -67,7 +69,7 @@
     <!-- formulaire d'ajout d'un commentaire -->
     <form method="POST" @submit.prevent="submitAddComment">
       <div class="form-group">
-        <label for="add_comment"><b>Ajouter un commentaire</b></label>
+        <label for="textComment"><b>Ajouter un commentaire</b></label>
         <textarea
           v-model="textComment"
           class="form-control"
