@@ -4,7 +4,7 @@
 Il est situé à l'adresse https://github.com/bmtestoc/Projet-7
 
 2/ Création de la base de données  
-Exécuter le script groupomania.sql dans votre SGBD (situé à la racine du projet).
+Exécuter le script groupomania.sql (situé à la racine du projet) dans votre SGBD.
 
 3/ Lancer WAMP ou LAMP et lancer le service mysql
 
