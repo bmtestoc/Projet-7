@@ -77,14 +77,10 @@ export default {
           .then((response) => {
             //Si authentification réussie
             let reponse = response.data;
-            // message personnalisé de bienvenue
+            //Stockage du token d'authentification dans local storage
+            localStorage.setItem("user_token", reponse.token);
+            //Message personnalisé de bienvenue
             this.$alert("Bienvenue " + response.data.userLogin + " !");
-            let userObject = JSON.stringify(reponse);
-            localStorage.setItem("user", userObject);
-            let user = JSON.parse(localStorage.getItem("user"));
-            //Token d'authentification
-            token = user.token;
-            localStorage.setItem("user_token", token);
             //Redirection vers les posts
             router.push("posts");
           })

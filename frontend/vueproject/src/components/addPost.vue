@@ -8,7 +8,7 @@
         ></i
       ></a>
     </div>
-    <heading><h1>Créer un sujet</h1></heading>
+    <h1>Créer un sujet</h1>
     <!-- formulaire d'envoi -->
     <form method="POST" @submit.prevent="submitAddPost">
       <div class="form-group">

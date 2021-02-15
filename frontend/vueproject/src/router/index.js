@@ -12,6 +12,7 @@ import component404 from '@/views/error404.vue'
 import userAccount from '@/views/userAccount.vue'
 import admin from '@/views/admin.vue'
 import addPost from '@/views/addPost.vue'
+import axios from "axios";
 
 let router = new Router({
   mode: 'history',
@@ -41,7 +42,7 @@ let router = new Router({
         requiresAuth: true
       }
     },
-        {
+    {
       path: '/post/:id',
       name: 'postPage',
       component: post,
@@ -52,7 +53,7 @@ let router = new Router({
     {
       path: '/cgu',
       name: 'rules',
-      component: rules,      
+      component: rules,
     },
     {
       path: '*',
@@ -88,24 +89,39 @@ let router = new Router({
     }
   ]
 })
+
 // regles de redirection en fonction des droits
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (localStorage.getItem('user_token') == null) {
+      //on redirige vers signin s'il n'y a pas de user_token dans le local storage
       next({
         path: '/signin',
         params: { nextUrl: to.fullPath }
       })
     } else {
-      let user = JSON.parse(localStorage.getItem('user'))
       if (to.matched.some(record => record.meta.isAdmin)) {
-        if (user.profile === 1) {
-          next()
-        }
-        else {
-          next({ name: 'posts' })
-        }
+        //si le user doit être admin pour accéder à la route, on va chercher ses infos à partir du token renseigné dans local storage
+        axios.get("http://localhost:5010/api/user/fromtoken", {
+          headers: {
+            Authorization: `token ${localStorage.getItem("user_token")}`,
+          },
+        })
+          .then((response) => {
+            //si user.profile = 1 (admin), alors on l'autorise à accéder à la route
+            if (response.data.profile === 1) {
+              next()
+            }
+            else {
+              //sinon, on le redirige vers le forum (liste des posts)
+              next({ name: 'posts' })
+            }
+          })
+          .catch((errors) => {
+
+          });
       } else {
+        //si pas besoin d'être admin, on redirige vers la page demandée
         next()
       }
     }

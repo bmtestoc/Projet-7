@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <heading><h1>Mon compte</h1></heading>
+    <h1>Mon compte</h1>
     <!-- pour changer son mot de passe avec rappel des consignes -->
     <div id="changePassword">
       <form method="POST" @submit.prevent="submitNewPassword">
@@ -15,8 +15,6 @@
             id="newPassword"
             name="newPassword"
             placeholder="Saisissez votre nouveau mot de passe"
-            v-on:focus="showdiv"
-            v-on:blur="maskdiv"
             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
             v-model="password"
           />
@@ -59,13 +57,20 @@ export default {
       password: "",
     };
   },
+  async created() {
+    this.userConnected = (
+      await axios.get("http://localhost:5010/api/user/fromtoken", {
+        headers: {
+          Authorization: `token ${localStorage.getItem("user_token")}`,
+        },
+      })
+    ).data;
+  },
   methods: {
     // suppression du compte
     deleteAccount: function () {
-      localStorage.getItem("user");
-      let user = JSON.parse(localStorage.getItem("user"));
       axios
-        .delete("http://localhost:5010/api/user/" + user.userId, {
+        .delete("http://localhost:5010/api/user/" + this.userConnected.id, {
           headers: {
             Authorization: `token ${localStorage.getItem("user_token")}`,
           },
@@ -81,10 +86,9 @@ export default {
     },
     // changement du mot de passe
     submitNewPassword: function () {
-      let user = JSON.parse(localStorage.getItem("user"));
       axios
         .put(
-          "http://localhost:5010/api/user/" + user.userId,
+          "http://localhost:5010/api/user/" + this.userConnected.id,
           {
             password: this.password,
           },
@@ -101,15 +105,6 @@ export default {
           this.$alert("Une erreur est survenue lors de la modification");
         });
       return false;
-    },
-    showdiv: function () {
-      //Affichage des consignes pour choisir le mot de passe
-      document.getElementById("showfocus").style.display = "block";
-    },
-
-    maskdiv: function () {
-      //Masquage des consignes pour choisir le mot de passe
-      document.getElementById("showfocus").style.display = "none";
     },
   },
 };

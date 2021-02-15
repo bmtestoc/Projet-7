@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <heading><h1>Administration</h1></heading>
+    <h1>Administration</h1>
     <!-- champ de recherche -->
     <label for="search">Rechercher</label>
     <input

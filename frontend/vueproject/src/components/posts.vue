@@ -3,7 +3,7 @@
     <a href="http://www.groupomania.com"
       ><img src="../assets/icon-left-font2.png" alt="Groupomania"
     /></a>
-    <heading><h1>Forum</h1></heading>
+    <h1>Forum</h1>
     <!-- affichage de tous les posts -->
     <div id="posts">
       <div class="div-posts" v-for="post in posts">
@@ -16,7 +16,7 @@
           <i class="far fa-envelope"></i> Posté par {{ post.user_login }} le
           {{ post.post_createdAt | formatDate }}
         </div>
-        <div class="title" @click="goToPost(post.post_id)">
+        <div class="title cursorPointer" @click="goToPost(post.post_id)">
           {{ post.post_title }}
         </div>
         <div class="content" @click="goToPost(post.post_id)">
@@ -37,7 +37,9 @@
         </div>
         <!-- affichage bouton supprimer si le user est l'auteur du post ou s'il est admin -->
         <div
-          v-if="user.profile == 1 || user.userId == post.post_user_id"
+          v-if="
+            userConnected.profile == 1 || userConnected.id == post.post_user_id
+          "
           class="deleteButton"
         >
           <b-button
@@ -84,11 +86,14 @@ export default {
       page: 1,
     };
   },
-  async created() {},
-  computed: {
-    user() {
-      return JSON.parse(localStorage.getItem("user"));
-    },
+  async created() {
+    this.userConnected = (
+      await axios.get("http://localhost:5010/api/user/fromtoken", {
+        headers: {
+          Authorization: `token ${localStorage.getItem("user_token")}`,
+        },
+      })
+    ).data;
   },
   methods: {
     goToPost: function (postId) {
@@ -227,22 +232,22 @@ img {
     transform: translate(1px, -2px) rotate(-1deg);
   }
 }
-#newComments {
+.newComments {
   color: rgb(194, 60, 60);
 }
-#newComments span {
+.newComments span {
   display: block;
 }
 /* animation nouveau message */
-#newComments span:not(.light) {
+.newComments span:not(.light) {
   opacity: 0;
   animation: flashText 0.5s ease-out alternate infinite;
 }
-#newComments span.light {
+.newComments span.light {
   position: relative;
   display: inline-block;
 }
-#newComments span.light:before {
+.newComments span.light:before {
   position: absolute;
   left: 0;
   top: -10%;
@@ -263,5 +268,9 @@ img {
   to {
     opacity: 0.15;
   }
+}
+
+.cursorPointer {
+  cursor: pointer;
 }
 </style>

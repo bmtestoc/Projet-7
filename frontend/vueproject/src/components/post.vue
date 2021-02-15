@@ -110,7 +110,8 @@ export default {
       )
     ).data;
     //récupération des commentaires liés au post
-    this.postComments = (
+    this.postComments = //this.$route.params = paramètres passés à la route
+    (
       await axios.get(
         "http://localhost:5010/api/comment/?post_id=" + this.$route.params.id,
         {
