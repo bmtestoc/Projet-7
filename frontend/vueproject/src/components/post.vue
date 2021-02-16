@@ -3,9 +3,7 @@
     <a href="http://www.groupomania.com"
       ><img src="../assets/icon-left-font2.png" alt="Groupomania"
     /></a>
-    <heading
-      ><h1>{{ post.title }}</h1></heading
-    >
+    <h1>{{ post.title }}</h1>
     <div id="return">
       <a href="/posts"
         ><i
@@ -110,8 +108,7 @@ export default {
       )
     ).data;
     //récupération des commentaires liés au post
-    this.postComments = //this.$route.params = paramètres passés à la route
-    (
+    this.postComments = ( //this.$route.params = paramètres passés à la route
       await axios.get(
         "http://localhost:5010/api/comment/?post_id=" + this.$route.params.id,
         {
@@ -160,7 +157,6 @@ export default {
               }
             )
             .then((response) => {
-              console.log(response);
             })
             //Si échec authentification, avertissement de l'utilisateur
             .catch((err) => {
@@ -181,9 +177,7 @@ export default {
               }
             )
             .then((response) => {
-              console.log(response);
             })
-            //Si échec authentification, avertissement de l'utilisateur
             .catch((err) => {
               console.log(err);
             });

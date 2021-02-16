@@ -124,10 +124,8 @@ export default {
           }
         )
         .then((response) => {
-          console.log(response);
           router.go();
         })
-        //Si échec authentification, avertissement de l'utilisateur
         .catch((err) => {
           console.log(err);
         });
